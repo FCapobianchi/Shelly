@@ -1,0 +1,22 @@
+{
+  "name": "shelly",
+  "version": "1.0.0",
+  "description": "Discover Shelly device on lan network.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FCapobianchi/Shelly.git"
+  },
+  "author": "Fabiano Capobianchi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FCapobianchi/Shelly/issues"
+  },
+  "homepage": "https://github.com/FCapobianchi/Shelly#readme",
+  "devDependencies": {
+    "electron": "^29.1.4"
+  }
+}
