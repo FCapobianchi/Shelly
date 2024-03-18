@@ -1,0 +1,2 @@
+/* global bootstrap: false */
+(function () { })()
