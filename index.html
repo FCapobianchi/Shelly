@@ -25,7 +25,7 @@
 					<hr>
 					<ul class="nav nav-pills flex-column mb-auto">
 						<li>
-							<a href="#" class="nav-link text-white" id="discoverBTN">
+							<a href="#" class="nav-link text-white">
 							<svg class="bi me-2" width="16" height="16"><use xlink:href="node_modules/bootstrap-icons/bootstrap-icons.svg#speedometer2"/></svg>
 							Discover devices
 							</a>
@@ -55,9 +55,16 @@
 				</div>
 			</nav>
 
-			<main class="col-md-9 ms-sm-auto col-lg-10 d-md-block pt-4">
+			<main class="col-md-9 ms-sm-auto col-lg-10 d-md-block pt-2">
+				<div class="row">
+					<div class="col-lg-11 pb-4 pr-1">
+						<div id="spinner" class="spinner-border d-none" role="status"></div>	
+					</div>
+					<div class="col-lg-1 pb-4">
+						<button id="discoverBTN" class="btn btn-primary float-end">cerca</button>	
+					</div>				
+				</div>
 				<div id="containerHtml" class=""></div>
-				<div class="fixed-bottom text-center pb-4"><div id="spinner" class="spinner-border d-none" role="status"></div>	</div>
 			</main>
 		</div>
 	</div>
