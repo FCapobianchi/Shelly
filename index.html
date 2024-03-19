@@ -8,6 +8,7 @@
 
     <!-- Bootstrap core CSS -->
 	<link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- Custom styles for this template -->
     <link href="css/dashboard.css" rel="stylesheet">
     <link href="css/sidebars.css" rel="stylesheet">
@@ -19,7 +20,8 @@
 			<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
 				<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark h-100">
 					<a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-					<svg class="bi me-2" width="40" height="32"><use xlink:href="node_modules/bootstrap-icons/bootstrap-icons.svg#bootstrap"/></svg>
+					<!--svg class="bi me-2" width="40" height="32"><use xlink:href="node_modules/bootstrap-icons/bootstrap-icons.svg#bootstrap"/></svg-->
+					<img src="img/shelly_logo_icon_blue.png" alt="" width="32" height="32" class="rounded-circle me-2">
 					<span class="fs-4">Shelly</span>
 					</a>
 					<hr>
@@ -27,7 +29,7 @@
 						<li>
 							<a href="#" class="nav-link text-white">
 							<svg class="bi me-2" width="16" height="16"><use xlink:href="node_modules/bootstrap-icons/bootstrap-icons.svg#speedometer2"/></svg>
-							Discover devices
+							Devices
 							</a>
 						</li>
 						<li>
@@ -41,8 +43,8 @@
 					<hr>
 					<div class="dropdown">
 						<a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-							<img src="img/shelly_logo_icon_blue.png" alt="" width="32" height="32" class="rounded-circle me-2">
-							<strong>USER</strong>
+							<!--img src="img/shelly_logo_icon_blue.png" alt="" width="32" height="32" class="rounded-circle me-2"-->
+							<strong class="d-block w-100">USER</strong>
 						</a>
 						<ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
 							<li><a class="dropdown-item" href="#">New project...</a></li>
@@ -64,11 +66,12 @@
 						<button id="discoverBTN" class="btn btn-primary float-end">cerca</button>	
 					</div>				
 				</div>
-				<div id="containerHtml" class=""></div>
+				<div id="containerHtml" class="row row-cols-lg-3 row-cols-md-2 row-cols-xs-1 g-4"></div>
 			</main>
 		</div>
 	</div>
 
+    <script src="node_modules/jquery/dist/jquery.slim.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/sidebars.js"></script>

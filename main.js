@@ -1,10 +1,11 @@
 // Genero le variabili di ambiente
 const { app, BrowserWindow, ipcMain } = require('electron/main');
 const path = require('node:path');
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database(path.join(__dirname, 'shelly.db'));
 let bonjour = require('bonjour')();
 let mainWindow;
-let webFrame;
-process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
+
 
 //Creo la funcion per lanciare la finestra principale
 const createWindow = () => {
@@ -90,3 +91,23 @@ ipcMain.on('closeModal', (event,data)=>{
     modalWindow.close();
 })
 
+ipcMain.on('database:get', (event,data)=>{
+    var record = db.get("SELECT * FROM `devices` WHERE id = 1;");
+    console.log(record);
+})
+
+ipcMain.on('database:add', (event,data)=>{
+    var record = db.run('INSERT  INTO  devices VALUES(null, "device_id","user","password","name");');
+    console.log(record)
+
+})
+
+ipcMain.on('database:all', (event,data)=>{
+    db.all("SELECT * FROM devices", (error, rows) => {
+        console.log(rows);
+        rows.forEach((row) => {
+            console.log(row.id + " " + row.device_id + " " + row.user + " " + row.password + " " + row.name);
+        })
+    });
+
+})
