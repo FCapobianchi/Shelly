@@ -6,7 +6,6 @@ const db = new sqlite3.Database(path.join(__dirname, 'shelly.db'));
 let bonjour = require('bonjour')();
 let mainWindow;
 
-
 //Creo la funcion per lanciare la finestra principale
 const createWindow = () => {
 	mainWindow = new BrowserWindow({
@@ -41,13 +40,12 @@ app.on('window-all-closed', () => {
 	}
 })
 
-
 /**  FUNCTION CHE AVVIA IL PARSING DEI DISPOSITIVI */
 ipcMain.on('discoverDevice:start', (event,data)=>{
     bonjour.destroy();
     bonjour = require('bonjour')();
     bonjour.find({ type: 'http' }, function (service) {
-        console.log('Found an HTTP server:', service)
+        //console.log('Found an HTTP server:', service)
         if(service)
             mainWindow.webContents.send('responseDevice',service);
     })
@@ -85,7 +83,6 @@ ipcMain.on('openModal', (event,url)=>{
 
 })
 
-
 /**  FUNCTION CHE APRE UNA NUOVA FINESTRA MODALE TRAMITE IL CANALE DI COMUNICAZIONE */
 ipcMain.on('closeModal', (event,data)=>{
     modalWindow.close();
@@ -99,15 +96,17 @@ ipcMain.on('database:get', (event,data)=>{
 ipcMain.on('database:add', (event,data)=>{
     var record = db.run('INSERT  INTO  devices VALUES(null, "device_id","user","password","name");');
     console.log(record)
-
 })
 
 ipcMain.on('database:all', (event,data)=>{
     db.all("SELECT * FROM devices", (error, rows) => {
-        console.log(rows);
-        rows.forEach((row) => {
-            console.log(row.id + " " + row.device_id + " " + row.user + " " + row.password + " " + row.name);
-        })
+        return rows;
     });
+})
 
+ipcMain.on('database:device', (event, data) => {
+    console.log('ipcMain testdb');
+    db.all("SELECT * FROM devices", (error, rows) => {
+        mainWindow.webContents.send('responseDB',rows);
+    });
 })
