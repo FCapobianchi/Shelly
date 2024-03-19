@@ -22,6 +22,7 @@ window.addEventListener("dblclick", (event) => {
     ipcRenderer.send('closeModal',{});
 });
 
+
 // const {contextBridge} = require('electron')
 
 // contextBridge.exposeInMainWorld('var', {

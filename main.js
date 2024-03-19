@@ -20,7 +20,7 @@ const createWindow = () => {
             contextIsolation: false,	
 		} 
 	})
-	mainWindow.loadFile('./index.html')
+	mainWindow.loadFile('./html/index.html')
 }
 
 //Function che esegue la chiamata per la gestione della finestra principale
@@ -38,22 +38,6 @@ app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
 		app.quit()
 	}
-})
-
-/**  FUNCTION CHE AVVIA IL PARSING DEI DISPOSITIVI */
-ipcMain.on('discoverDevice:start', (event,data)=>{
-    bonjour.destroy();
-    bonjour = require('bonjour')();
-    bonjour.find({ type: 'http' }, function (service) {
-        //console.log('Found an HTTP server:', service)
-        if(service)
-            mainWindow.webContents.send('responseDevice',service);
-    })
-})
-
-/** FUNCTION CHE FERMA IL PROCESSO DI SCANNING DELLA RETE */
-ipcMain.on('discoverDevice:stop', (event,data)=>{
-    bonjour.destroy();
 })
 
 /**  FUNCTION CHE APRE UNA NUOVA FINESTRA MODALE TRAMITE IL CANALE DI COMUNICAZIONE */
@@ -86,6 +70,27 @@ ipcMain.on('openModal', (event,url)=>{
 /**  FUNCTION CHE APRE UNA NUOVA FINESTRA MODALE TRAMITE IL CANALE DI COMUNICAZIONE */
 ipcMain.on('closeModal', (event,data)=>{
     modalWindow.close();
+})
+
+ipcMain.on('changePage', (event,data)=>{
+    mainWindow.loadFile(data);
+})
+
+
+/**  FUNCTION CHE AVVIA IL PARSING DEI DISPOSITIVI */
+ipcMain.on('discoverDevice:start', (event,data)=>{
+    bonjour.destroy();
+    bonjour = require('bonjour')();
+    bonjour.find({ type: 'http' }, function (service) {
+        //console.log('Found an HTTP server:', service)
+        if(service)
+            mainWindow.webContents.send('responseDevice',service);
+    })
+})
+
+/** FUNCTION CHE FERMA IL PROCESSO DI SCANNING DELLA RETE */
+ipcMain.on('discoverDevice:stop', (event,data)=>{
+    bonjour.destroy();
 })
 
 ipcMain.on('database:get', (event,data)=>{

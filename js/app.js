@@ -2,6 +2,7 @@
 window.addEventListener('DOMContentLoaded', () => {
     const {ipcRenderer} = require('electron');
 	const discoverBTN = document.getElementById("discoverBTN");
+	const changePageBTN = document.getElementsByClassName("changePageBTN");
     const containerHtml = document.getElementById("containerHtml");
     let devices;
 
@@ -100,15 +101,13 @@ window.addEventListener('DOMContentLoaded', () => {
                 containerHtml.appendChild(col);
             }
         }
-
-
 	});
 
-
-
-
-    
-
+    for (var i=0; i < changePageBTN.length; i++) {
+        changePageBTN[i].onclick = function(){
+            ipcRenderer.send('changePage',changePageBTN[i].attributes.href);
+        }
+    };
 
 });
 
