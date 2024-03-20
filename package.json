@@ -6,7 +6,6 @@
   "scripts": {
     "start": "electron-forge start",
     "start-electron": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "package": "electron-forge package",
     "make": "electron-forge make"
   },
@@ -15,7 +14,7 @@
     "url": "git+https://github.com/FCapobianchi/Shelly.git"
   },
   "author": "Fabiano Capobianchi",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/FCapobianchi/Shelly/issues"
   },

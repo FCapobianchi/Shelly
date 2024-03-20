@@ -2,7 +2,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron/main');
 const path = require('node:path');
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database(path.join(__dirname, 'shelly.db'));
+const db = new sqlite3.Database(path.join(__dirname, 'db/shelly.db'));
 let bonjour = require('bonjour')();
 let mainWindow;
 
@@ -110,7 +110,6 @@ ipcMain.on('database:all', (event,data)=>{
 })
 
 ipcMain.on('database:device', (event, data) => {
-    console.log('ipcMain testdb');
     db.all("SELECT * FROM devices", (error, rows) => {
         mainWindow.webContents.send('responseDB',rows);
     });
