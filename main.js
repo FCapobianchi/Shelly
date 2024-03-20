@@ -7,6 +7,7 @@ const ct = fs.existsSync(path.join(__dirname, 'db/shelly.db'))
 const db = new sqlite3.Database(path.join(__dirname, 'db/shelly.db'));
 let bonjour = require('bonjour')();
 let mainWindow;
+let currentDevice;
 
 if (!ct) {
     // create a table
@@ -89,6 +90,19 @@ ipcMain.on('changePage', (event,data)=>{
     mainWindow.loadFile(data);
 })
 
+/**  FUNCTION CHE APRE UNA NUOVA FINESTRA MODALE TRAMITE IL CANALE DI COMUNICAZIONE */
+ipcMain.on('openEdit', (event,device_id)=>{
+    db.get("SELECT * FROM `devices` WHERE device_id = ?;",[device_id], (error, row) => {
+        currentDevice = row;
+        mainWindow.loadFile('html/edit.html');
+    });
+})
+
+
+ipcMain.on('getDevice', (event,{})=>{
+    mainWindow.webContents.send('responseDevice',currentDevice);
+})
+
 
 /**  FUNCTION CHE AVVIA IL PARSING DEI DISPOSITIVI */
 ipcMain.on('discoverDevice:start', (event,data)=>{
@@ -97,30 +111,36 @@ ipcMain.on('discoverDevice:start', (event,data)=>{
     bonjour.find({ type: 'http' }, function (service) {
         //console.log('Found an HTTP server:', service)
         if(service)
-            mainWindow.webContents.send('responseDevice',service);
+            mainWindow.webContents.send('responseDevices',service);
     })
 })
+
 
 /** FUNCTION CHE FERMA IL PROCESSO DI SCANNING DELLA RETE */
 ipcMain.on('discoverDevice:stop', (event,data)=>{
     bonjour.destroy();
 })
 
+
 ipcMain.on('database:get', (event,data)=>{
-    var record = db.get("SELECT * FROM `devices` WHERE id = 1;");
-    console.log(record);
+    // var record = db.get("SELECT * FROM `devices` WHERE id = 1;");
+    // console.log(record);
 })
 
-ipcMain.on('database:add', (event,data)=>{
-    var record = db.run('INSERT  INTO  devices VALUES(null, "device_id","user","password","name");');
+
+ipcMain.on('database:add', (event,query)=>{
+    var record = db.run(query);
     console.log(record)
 })
 
-ipcMain.on('database:all', (event,data)=>{
-    db.all("SELECT * FROM devices", (error, rows) => {
-        return rows;
+
+ipcMain.on('database:update', (event,data)=>{
+    console.log(data)
+    db.run(data.query,data.valori,(error) => {
+        console.log(error);
     });
 })
+
 
 ipcMain.on('database:device', (event, data) => {
     db.all("SELECT * FROM devices", (error, rows) => {

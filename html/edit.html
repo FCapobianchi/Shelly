@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+	<meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+    <title>Shelly</title>
+
+    <!-- Bootstrap core CSS -->
+	<link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../css/dashboard.css" rel="stylesheet">
+    <link href="../css/sidebars.css" rel="stylesheet">
+	
+  </head>
+  <body data-bs-theme="dark">
+	<div class="container-fluid">
+		<div class="row">
+			<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+				<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark h-100">
+					<a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+					<!--svg class="bi me-2" width="40" height="32"><use xlink:href="../node_modules/bootstrap-icons/bootstrap-icons.svg#bootstrap"/></svg-->
+					<img src="../img/shelly_logo_icon_blue.png" alt="" width="32" height="32" class="rounded-circle me-2">
+					<span class="fs-4">Shelly</span>
+					</a>
+					<hr>
+					<ul class="nav nav-pills flex-column mb-auto">
+						<li>
+							<a href="index.html" class="nav-link text-white changePageBTN">
+							<svg class="bi me-2" width="16" height="16"><use xlink:href="../node_modules/bootstrap-icons/bootstrap-icons.svg#speedometer2"/></svg>
+							Devices
+							</a>
+						</li>
+						<li>
+							<a href="products.html" class="nav-link text-white changePageBTN" id="">
+							<svg class="bi me-2" width="16" height="16"><use xlink:href="../node_modules/bootstrap-icons/bootstrap-icons.svg#grid"/></svg>
+							Products
+							</a>
+							
+						</li>
+					</ul>
+					<hr>
+					<div class="dropdown">
+						<a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+							<!--img src="../img/shelly_logo_icon_blue.png" alt="" width="32" height="32" class="rounded-circle me-2"-->
+							<strong class="d-block w-100">USER</strong>
+						</a>
+						<ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+							<li><a class="dropdown-item" href="#">New project...</a></li>
+							<li><a class="dropdown-item" href="#">Settings</a></li>
+							<li><a class="dropdown-item" href="#">Profile</a></li>
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item" href="#">Sign out</a></li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+
+			<main class="col-md-9 ms-sm-auto col-lg-10 d-md-block pt-2">
+				<div id="containerHtml" class="row">
+
+					<form id="editForm">
+						ID<input type="text" name="id" readonly="readonly"><br>
+						DEVICE ID<input type="text" name="device_id" readonly="readonly"><br>
+						NAME <input type="text" name="name"><br>
+						HTTP USER <input type="text" name="user"><br>
+						HTTP PASSWORD <input type="text" name="password"><br>
+						<input type="submit" id="submitForm" value="SUBMIT">
+					</form>
+				</div>
+			</main>
+		</div>
+	</div>
+
+    <script src="../node_modules/jquery/dist/jquery.slim.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/app.js"></script>
+
+  </body>	  
+</html>

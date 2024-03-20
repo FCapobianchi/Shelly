@@ -21,10 +21,3 @@ window.addEventListener('DOMContentLoaded', () => {
 window.addEventListener("dblclick", (event) => {
     ipcRenderer.send('closeModal',{});
 });
-
-
-// const {contextBridge} = require('electron')
-
-// contextBridge.exposeInMainWorld('var', {
-//     dbDevices: () => ipcRenderer.once('database:device'),
-// })
