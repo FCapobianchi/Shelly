@@ -1,10 +1,23 @@
 // Genero le variabili di ambiente
 const { app, BrowserWindow, ipcMain } = require('electron/main');
+const fs = require('fs');
 const path = require('node:path');
 const sqlite3 = require('sqlite3').verbose();
+const ct = fs.existsSync(path.join(__dirname, 'db/shelly.db'))
 const db = new sqlite3.Database(path.join(__dirname, 'db/shelly.db'));
 let bonjour = require('bonjour')();
 let mainWindow;
+
+if (!ct) {
+    // create a table
+    console.log("create a table");
+    db.serialize(() => {
+        db.run('CREATE TABLE "devices" ( "id" INTEGER, "device_id" TEXT, "user" TEXT, "password" TEXT, "name" TEXT, PRIMARY KEY("id" AUTOINCREMENT) )');
+    });
+} else {
+    console.log("no create a table");
+
+}
 
 //Creo la funcion per lanciare la finestra principale
 const createWindow = () => {
@@ -114,3 +127,12 @@ ipcMain.on('database:device', (event, data) => {
         mainWindow.webContents.send('responseDB',rows);
     });
 })
+
+
+ipcMain.handle('db-query', async (event, sqlQuery) => {
+    return new Promise(res => {
+        db.all(sqlQuery, (err, rows) => {
+          res(rows);
+        });
+    });
+});

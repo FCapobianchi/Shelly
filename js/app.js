@@ -6,6 +6,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const containerHtml = document.getElementById("containerHtml");
     let devices;
 
+    //const rows = await ipcRenderer.invoke('db-query', "SELECT * FROM Users");
+
     ipcRenderer.send('database:device', {})
 	ipcRenderer.on('responseDB',(e,data)=>{
         devices = data;
