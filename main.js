@@ -1,6 +1,7 @@
 // Genero le variabili di ambiente
 const { app, BrowserWindow, ipcMain } = require('electron/main');
 const fs = require('fs');
+const { event } = require('jquery');
 const path = require('node:path');
 const sqlite3 = require('sqlite3').verbose();
 const ct = fs.existsSync(path.join(__dirname, 'db/shelly.db'))
@@ -13,7 +14,7 @@ if (!ct) {
     // create a table
     console.log("create a table");
     db.serialize(() => {
-        db.run('CREATE TABLE "devices" ( "id" INTEGER, "device_id" TEXT, "user" TEXT, "password" TEXT, "name" TEXT, PRIMARY KEY("id" AUTOINCREMENT) )');
+        db.run('CREATE TABLE "devices" ( "id" INTEGER, "device_id" TEXT, "user" TEXT, "password" TEXT, "name" TEXT, "type" TEXT, "host" TEXT,"app" TEXT, PRIMARY KEY("id" AUTOINCREMENT) )');
     });
 } else {
     console.log("no create a table");
@@ -32,9 +33,11 @@ const createWindow = () => {
 		webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,	
+            preload: path.join(__dirname, 'js/preload.js')
+
 		} 
 	})
-	mainWindow.loadFile('./html/index.html')
+	mainWindow.loadFile('./html/app.html')
 }
 
 //Function che esegue la chiamata per la gestione della finestra principale
@@ -69,7 +72,7 @@ ipcMain.on('openModal', (event,url)=>{
             nodeIntegration: true,
             contextIsolation: false,
             allowRunningInsecureContent: true,		
-			preload: path.join(__dirname, 'js/preload.js')
+			preload: path.join(__dirname, 'js/modal.js')
         } 
 
     });
@@ -90,8 +93,16 @@ ipcMain.on('changePage', (event,data)=>{
     mainWindow.loadFile(data);
 })
 
+ipcMain.on('closeApp', (event,data)=>{
+    console.log("closeApp");
+    mainWindow.close();
+	app.quit()
+});
+
+
 /**  FUNCTION CHE APRE UNA NUOVA FINESTRA MODALE TRAMITE IL CANALE DI COMUNICAZIONE */
 ipcMain.on('openEdit', (event,device_id)=>{
+    console.log(device_id);
     db.get("SELECT * FROM `devices` WHERE device_id = ?;",[device_id], (error, row) => {
         currentDevice = row;
         mainWindow.loadFile('html/edit.html');

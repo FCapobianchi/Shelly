@@ -1,23 +1,22 @@
 const {ipcRenderer} = require('electron');
 
 window.addEventListener('DOMContentLoaded', () => { 
-    const btn = document.createElement("BUTTON");
-    btn.innerHTML = "X";
-    btn.style.position = "absolute";
-    btn.style.bottom = "5px";
-    btn.style.right = "5px";
-    btn.style.width = "50px";
-    btn.style.height = "50px";
-    btn.style.lineHeight = "25px";
-    btn.style.opacity = 0.75;
-    btn.style.borderRadius = "25px";
-    btn.onclick = function() { 
-        ipcRenderer.send('closeModal',{});
-    };
-    
-    document.body.appendChild(btn);
-});
+	const changePageBTN = document.getElementsByClassName("changePageBTN");
+    const closeBTN = document.getElementById("closeBTN");
 
-window.addEventListener("dblclick", (event) => {
-    ipcRenderer.send('closeModal',{});
+    if(changePageBTN.length)
+        for (var i=0; i < changePageBTN.length; i++) {
+            changePageBTN[i].onclick = function(){
+                ipcRenderer.send('changePage',changePageBTN[i].attributes.href);
+            }
+        };
+
+    if(closeBTN)
+        closeBTN.addEventListener('click',(event)=>{
+            event.preventDefault();
+            event.stopPropagation();
+            ipcRenderer.send('closeApp',{});
+        });
+
+      
 });
