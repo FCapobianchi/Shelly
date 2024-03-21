@@ -4,22 +4,22 @@ const fs = require('fs');
 const { event } = require('jquery');
 const path = require('node:path');
 const sqlite3 = require('sqlite3').verbose();
-const ct = fs.existsSync(path.join(__dirname, 'db/shelly.db'))
-const db = new sqlite3.Database(path.join(__dirname, 'db/shelly.db'));
+const ct = fs.existsSync(path.join(app.getPath('userData'), 'shelly.db'))
+console.log(ct);
+const db = new sqlite3.Database(path.join(app.getPath('userData'), 'shelly.db'));
 let bonjour = require('bonjour')();
 let mainWindow;
 let currentDevice;
+console.log(app.getPath('appData'));
+console.log(app.getPath('userData'));
+console.log(path.join(app.getPath('userData'), 'shelly.db'));
+
 
 if (!ct) {
-    // create a table
-    console.log("create a table");
     db.serialize(() => {
         db.run('CREATE TABLE "devices" ( "id" INTEGER, "device_id" TEXT, "user" TEXT, "password" TEXT, "name" TEXT, "type" TEXT, "host" TEXT,"app" TEXT, PRIMARY KEY("id" AUTOINCREMENT) )');
     });
-} else {
-    console.log("no create a table");
-
-}
+} 
 
 //Creo la funcion per lanciare la finestra principale
 const createWindow = () => {

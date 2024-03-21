@@ -31,8 +31,8 @@ window.addEventListener('DOMContentLoaded', () => {
             cardbody.appendChild(h5);
 
             p.classList.add("card-text");
-            p.appendChild(document.createTextNode(device.app));
-            em.appendChild(document.createTextNode(device.device_id));
+            p.appendChild(document.createTextNode(device.device_id));
+            em.appendChild(document.createTextNode(device.app));
             h5.appendChild(document.createElement("hr"));
             h5.appendChild(em);
             cardbody.appendChild(p);
