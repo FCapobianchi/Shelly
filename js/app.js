@@ -1,4 +1,9 @@
 const {ipcRenderer} = require('electron');
+window.$ = window.jQuery = require('jquery');
+// Shorthand for $( document ).ready()
+$(function() {
+    console.log( "ready!" );
+});
 
 window.addEventListener('DOMContentLoaded', () => {
     const containerHtml = document.getElementById("containerHtml");
@@ -80,6 +85,8 @@ window.addEventListener('DOMContentLoaded', () => {
 	ipcRenderer.on('reloadPage',(e,data)=>{
 		window.location.reload();
 	});
+
+
 });
 
 
