@@ -4,13 +4,14 @@ window.addEventListener('DOMContentLoaded', () => {
 	const discoverBTN = document.getElementById("discoverBTN");
     const containerHtml = document.getElementById("containerHtml");
     
-    let devices = [];
+    let devices;
 
     if(containerHtml){
         ipcRenderer.send('database:device', {})
     }
 	ipcRenderer.on('responseDB',(e,data)=>{
-        devices = data;
+        devices = (data !== undefined)?data:new Array();
+        console.log(data);
         if(containerHtml.children.length === 0) loadDevices();        
 	});
 
@@ -79,9 +80,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 anchorAdd.classList.add("btn-info");
                 anchorAdd.classList.add("float-end");
                 anchorAdd.onclick = function() { 
-                        let query = 'INSERT  INTO devices VALUES(null,"'+data.txt.id+'","","","device","'+data.type+'","'+data.host+'","'+data.txt.app+'");';
-                        ipcRenderer.send('database:add', query);
-                        ipcRenderer.send('changePage','html/devices.html');
+                    let valori = data;
+                    ipcRenderer.send('database:addDevice', valori);
+                    ipcRenderer.send('changePage','html/devices.html');
                 };
                 anchorAdd.appendChild(document.createTextNode("Aggiungi"));
                 cardbody.appendChild(anchorAdd);                    

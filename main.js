@@ -12,9 +12,10 @@ let currentDevice;
 
 if (!ct) {
     db.serialize(() => {
-        db.run('CREATE TABLE "devices" ( "id" INTEGER, "device_id" TEXT, "user" TEXT, "password" TEXT, "name" TEXT, "type" TEXT, "host" TEXT,"app" TEXT, PRIMARY KEY("id" AUTOINCREMENT) )');
+        db.run('CREATE TABLE "devices" ( "id" INTEGER, "position" INTEGER, "device_id" TEXT, "user" TEXT, "password" TEXT, "name" TEXT, "type" TEXT, "host" TEXT,"app" TEXT, PRIMARY KEY("id" AUTOINCREMENT) )');
     });
 } 
+console.log(app.getPath('userData'));
 
 /**  SEZIONE DI GESTIONE FUNCTION DI DEFAULT DELL'APP */
 const createWindow = () => {
@@ -128,12 +129,28 @@ ipcMain.on('database:add', (event,query)=>{
     var record = db.run(query);
 });
 
+ipcMain.on('database:addDevice', (event,data)=>{
+    db.get("SELECT MAX(id) as max FROM devices;", (error, row) => {
+        console.log(row.max);
+        let valori = [row.max??1,data.txt.id,data.type,data.host,data.txt.app]
+        let query = 'INSERT INTO devices VALUES(null,?,?,"","","device",?,?,?);';
+        db.run(query,valori,(error) => { });
+    });
+});
+
+ipcMain.on('database:updateDevice', (event,data)=>{
+    db.run(data.query,data.valori,(error) => { 
+        if(data.reload)
+            mainWindow.webContents.send('reloadPage');
+    });
+});
+
 ipcMain.on('database:update', (event,data)=>{
     db.run(data.query,data.valori,(error) => { });
 });
 
 ipcMain.on('database:device', (event, data) => {
-    db.all("SELECT * FROM devices", (error, rows) => {
+    db.all("SELECT * FROM devices ORDER BY position ASC;", (error, rows) => {
         mainWindow.webContents.send('responseDB',rows);
     });
 });
