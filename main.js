@@ -131,7 +131,6 @@ ipcMain.on('database:add', (event,query)=>{
 
 ipcMain.on('database:addDevice', (event,data)=>{
     db.get("SELECT MAX(id) as max FROM devices;", (error, row) => {
-        console.log(row.max);
         let valori = [row.max??1,data.txt.id,data.type,data.host,data.txt.app]
         let query = 'INSERT INTO devices VALUES(null,?,?,"","","device",?,?,?);';
         db.run(query,valori,(error) => { });
@@ -139,12 +138,15 @@ ipcMain.on('database:addDevice', (event,data)=>{
 });
 
 ipcMain.on('database:updateDevice', (event,data)=>{
-    console.log(data);
     db.run(data.query,data.valori,(error) => { });
 });
 
 ipcMain.on('database:update', (event,data)=>{
-    db.run(data.query,data.valori,(error) => { });
+    db.run(data.query,data.valori,(error) => { 
+        if(data.changePage) {
+            mainWindow.loadFile(data.changePage);
+        }
+    });
 });
 
 ipcMain.on('database:device', (event, data) => {

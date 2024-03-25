@@ -19,7 +19,7 @@ window.addEventListener('DOMContentLoaded', () => {
             };
             query = query.slice(0, -2)+' WHERE id = '+editForm.elements[0].value+';';
             console.log(query);
-            ipcRenderer.send('database:update', {query: query, valori:valori});
+            ipcRenderer.send('database:update', {query: query, valori:valori, changePage:"html/app.html"});
             return false;
                                    
         });
