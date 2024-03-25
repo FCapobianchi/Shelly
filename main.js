@@ -139,10 +139,8 @@ ipcMain.on('database:addDevice', (event,data)=>{
 });
 
 ipcMain.on('database:updateDevice', (event,data)=>{
-    db.run(data.query,data.valori,(error) => { 
-        if(data.reload)
-            mainWindow.webContents.send('reloadPage');
-    });
+    console.log(data);
+    db.run(data.query,data.valori,(error) => { });
 });
 
 ipcMain.on('database:update', (event,data)=>{
