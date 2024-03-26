@@ -120,14 +120,19 @@ body {
   background-color: transparent;
 }
 
-#main {
-  width: 100%;
-  height: 100%;
-  border: 1px solid fuchsia;
+.column {
+	transition: transform 0.2s ease-out;
 }
 
-.card {
-  /* width: 30rem;
-  max-width: 40rem; */
+.column.over {
+	opacity: 0.25;
 }
 
+.column.moving {
+	opacity: 0.25;
+	transform: scale(0.8);
+}
+
+.column .card-title{
+	cursor: move;
+}
