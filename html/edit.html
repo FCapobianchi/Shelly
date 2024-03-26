@@ -59,14 +59,41 @@
 
 			<main class="col-md-9 ms-sm-auto col-lg-10 d-md-block pt-2">
 				<div id="containerHtml" class="row">
-
 					<form id="editForm">
-						ID<input type="text" name="id" readonly="readonly"><br>
-						DEVICE ID<input type="text" name="device_id" readonly="readonly"><br>
-						NAME <input type="text" name="name"><br>
-						HTTP USER <input type="text" name="user"><br>
-						HTTP PASSWORD <input type="text" name="password"><br>
-						<input type="submit" id="submitForm" value="SUBMIT">
+						<div class="mb-3">
+							<label for="systemId" class="form-label">SYSTEM ID</label>
+							<input type="text" class="form-control" id="systemId" name="id" aria-describedby="systemIdDesc" readonly="readonly">
+							<div id="systemIdDesc" class="form-text">Application device ID.</div>
+						</div>
+
+						<div class="mb-3">
+							<label for="deviceId" class="form-label">DEVICE ID</label>
+							<input type="text" class="form-control" id="deviceId" name="device_id" aria-describedby="deviceIdDesc" readonly="readonly">
+							<div id="deviceIdDesc" class="form-text">System device ID.</div>
+						</div>
+
+						<div class="mb-3">
+							<label for="deviceName" class="form-label">Name </label>
+							<input type="text" class="form-control" id="deviceName" name="name" aria-describedby="deviceNameDesc">
+						  	<div id="deviceNameDesc" class="form-text">Application name.</div>
+						</div>
+
+						<div class="mb-3">
+							<label for="authUser" class="form-label">Auth user</label>
+							<input type="text" class="form-control" id="authUser" name="user" aria-describedby="authUserDesc">
+							<div id="authUserDesc" class="form-text">Username used for authentication</div>
+						</div>
+
+						<div class="mb-3">
+							<label for="authPassword" class="form-label">Auth password</label>
+							<input type="password" class="form-control" id="authPassword" name="password" aria-describedby="authPasswordDesc">
+							<div id="authPasswordDesc" class="form-text">Password used for authentication</div>
+						</div>
+
+						<div class="mb-3">
+							<button type="submit" class="btn btn-primary" id="submitForm">SUBMIT</button>
+						</div>
+						
 					</form>
 				</div>
 			</main>

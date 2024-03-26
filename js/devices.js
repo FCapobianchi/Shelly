@@ -71,7 +71,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 anchorEdit.onclick = function() { 
                         ipcRenderer.send('openEdit',data.txt.id);
                 };
-                anchorEdit.appendChild(document.createTextNode("Modifica"));
+                anchorEdit.appendChild(document.createTextNode("Edit"));
                 cardbody.appendChild(anchorEdit);
             }
             else {               
@@ -95,7 +95,7 @@ window.addEventListener('DOMContentLoaded', () => {
             anchorOpen.onclick = function() { 
                 ipcRenderer.send('openModal',url);
             };
-            anchorOpen.appendChild(document.createTextNode("Apri"));             
+            anchorOpen.appendChild(document.createTextNode("Open view"));             
             cardbody.appendChild(anchorOpen);
             card.appendChild(cardbody);
             col.appendChild(card);

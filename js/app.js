@@ -55,7 +55,7 @@ window.addEventListener('DOMContentLoaded', () => {
             anchorOpen.onclick = function() { 
                 ipcRenderer.send('openModal',url);
             };
-            anchorOpen.appendChild(document.createTextNode("Apri"));  
+            anchorOpen.appendChild(document.createTextNode("Open view"));  
             cardbody.appendChild(anchorOpen);
 
             let devId = device.device_id;
@@ -66,7 +66,7 @@ window.addEventListener('DOMContentLoaded', () => {
             anchorEdit.onclick = function() { 
                 ipcRenderer.send('openEdit',devId);
             };
-            anchorEdit.appendChild(document.createTextNode("Modifica"));
+            anchorEdit.appendChild(document.createTextNode("Edit"));
             cardbody.appendChild(anchorEdit);
             anchorEdit = null;
 

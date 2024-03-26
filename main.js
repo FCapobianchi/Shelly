@@ -133,7 +133,10 @@ ipcMain.on('database:addDevice', (event,data)=>{
     db.get("SELECT MAX(id) as max FROM devices;", (error, row) => {
         let valori = [row.max??1,data.txt.id,data.type,data.host,data.txt.app]
         let query = 'INSERT INTO devices VALUES(null,?,?,"","","device",?,?,?);';
-        db.run(query,valori,(error) => { });
+        db.run(query,valori,(error) => { 
+
+            
+        });
     });
 });
 
