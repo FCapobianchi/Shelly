@@ -132,11 +132,19 @@ ipcMain.on('database:add', (event,query)=>{
 
 ipcMain.on('database:addDevice', (event,data)=>{
     db.get("SELECT MAX(id) as max FROM devices;", (error, row) => {
-        let valori = [row.max??1,data.txt.id,data.type,data.host,data.txt.app]
+        let valori = [row.max??1,data.valori.txt.id,data.valori.type,data.valori.host,data.valori.txt.app]
         let query = 'INSERT INTO devices VALUES(null,?,?,"","","device",?,?,?);';
         db.run(query,valori,(error) => { 
+            if(data.device.auth){
+                db.get("SELECT * FROM `devices` WHERE device_id = ?;",[data.valori.txt.id], (error, row) => {
+                    currentDevice = row;
+                    mainWindow.loadFile('html/edit.html');
+                });
 
-            
+            }
+            else {
+                mainWindow.loadFile('html/devices.html');
+            } 
         });
     });
 });
@@ -159,24 +167,25 @@ ipcMain.on('database:device', (event, data) => {
     });
 });
 
-
-ipcMain.on('http:getData', (event, data) => {
-    http.get('http://shellyswitch25-349454793ba5.local/shelly', res => {
+ipcMain.on('shellyApi:getDevice', (event, valori) => {
+    http.get('http://'+valori.host+'/shelly', res => {
         let data = [];
+        console.log('valori:', valori);
         console.log('Status Code:', res.statusCode);
         res.on('data', chunk => {
-          data.push(chunk);
+            data.push(chunk);
         });
       
         res.on('end', () => {
-          console.log('Response ended: ');
-          const resp = JSON.parse(Buffer.concat(data).toString());
-          console.log(resp);
-          console.log(JSON.stringify(resp));
-      
+            console.log('Response ended: ');
+            const resp = JSON.parse(Buffer.concat(data).toString());
+            console.log(resp);
+            console.log(JSON.stringify(resp));
+            mainWindow.webContents.send('shellyApi:device',{valori:valori,device:resp});
         });
-      }).on('error', err => {
-        console.log('Error: ', err.message);
-      });
+
+        }).on('error', err => {
+            console.log('Error: ', err.message);
+        });
 });
 

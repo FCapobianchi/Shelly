@@ -11,7 +11,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 	ipcRenderer.on('responseDB',(e,data)=>{
         devices = (data !== undefined)?data:new Array();
-        console.log(data);
         if(containerHtml.children.length === 0) loadDevices();        
 	});
 
@@ -53,7 +52,6 @@ window.addEventListener('DOMContentLoaded', () => {
             let url = data.type+'://';
             
             if(device = devices.find((element) => element.device_id === data.txt.id)){
-                console.log(device);
                 if(device.user) {
                     url +=device.user+':'+device.password+'@';
                 }
@@ -69,7 +67,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 anchorEdit.classList.add("btn-secondary");
                 anchorEdit.classList.add("float-end");
                 anchorEdit.onclick = function() { 
-                        ipcRenderer.send('openEdit',data.txt.id);
+                    ipcRenderer.send('openEdit',data.txt.id);
                 };
                 anchorEdit.appendChild(document.createTextNode("Edit"));
                 cardbody.appendChild(anchorEdit);
@@ -81,17 +79,15 @@ window.addEventListener('DOMContentLoaded', () => {
                 anchorAdd.classList.add("float-end");
                 anchorAdd.onclick = function() { 
                     let valori = data;
-                    ipcRenderer.send('database:addDevice', valori);
-                    ipcRenderer.send('changePage','html/devices.html');
+                    ipcRenderer.send('shellyApi:getDevice', valori);                    
                 };
-                anchorAdd.appendChild(document.createTextNode("Aggiungi"));
+                anchorAdd.appendChild(document.createTextNode("Add"));
                 cardbody.appendChild(anchorAdd);                    
             }
 
             url += data.host;            
             anchorOpen.classList.add("btn");
             anchorOpen.classList.add("btn-primary");
-            console.log(url)
             anchorOpen.onclick = function() { 
                 ipcRenderer.send('openModal',url);
             };
@@ -104,6 +100,13 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         }
 	});
+
+                
+    ipcRenderer.on('shellyApi:device',(e,data)=>{
+        ipcRenderer.send('database:addDevice', data);
+    });
+
+    
 
     if(discoverBTN)    
         discoverBTN.addEventListener('click', ()=>{

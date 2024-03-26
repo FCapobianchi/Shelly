@@ -1,4 +1,5 @@
 const {ipcRenderer} = require('electron');
+const {contextBridge} = require('electron');
 
 window.addEventListener('DOMContentLoaded', () => { 
 	const changePageBTN = document.getElementsByClassName("changePageBTN");
@@ -6,9 +7,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
     if(changePageBTN.length)
         for (var i=0; i < changePageBTN.length; i++) {
-            changePageBTN[i].onclick = function(){
-                ipcRenderer.send('changePage',changePageBTN[i].attributes.href);
-            }
+            if(changePageBTN[i])
+                changePageBTN[i].onclick = function(){
+                    ipcRenderer.send('changePage',changePageBTN[i].attributes.href);
+                }
         };
 
     if(closeBTN)
@@ -17,6 +19,6 @@ window.addEventListener('DOMContentLoaded', () => {
             event.stopPropagation();
             ipcRenderer.send('closeApp',{});
         });
-
-      
+       
 });
+

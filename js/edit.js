@@ -25,11 +25,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
     ipcRenderer.on('responseDevice',(e,device)=>{ 
-        // console.log(device);
-        // console.log(editForm.elements);
         for(element of editForm.elements){
-            console.log(element.name);
-            console.log(element.type);
             if(element && element.type !== "submit")
                 element.value = Object.getOwnPropertyDescriptor(device, element.name).value??null;
         };

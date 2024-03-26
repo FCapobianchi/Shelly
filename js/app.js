@@ -2,18 +2,18 @@ const {ipcRenderer} = require('electron');
 window.$ = window.jQuery = require('jquery');
 
 // Shorthand for $( document ).ready()
-$(function() {
-    console.log( "ready!" );
-});
+$(function() { });
 
 window.addEventListener('DOMContentLoaded', () => {
     const containerHtml = document.getElementById("containerHtml");
+    let btnTest = document.getElementById("btnTest");
 
     let devices = [];
 
     if(containerHtml){
         ipcRenderer.send('database:device', {})
     }
+
 	ipcRenderer.on('responseDB',(e,devices)=>{
 		devices.sort((a, b) => (a.position > b.position) ? 1 : -1);
         for(device of devices){
@@ -78,10 +78,10 @@ window.addEventListener('DOMContentLoaded', () => {
         };        
         dragCol();
 	});
+	
 	ipcRenderer.on('reloadPage',(e,data)=>{
 		window.location.reload();
 	});
-
 
 });
 
@@ -93,9 +93,7 @@ let dragCol = (function() {
 	var cols_ = document.querySelectorAll('#' + id_ + ' .column');
 	var dragSrcEl_ = null;
 
-	$("#containerHtml div.column").each(function(i){
-		console.log("id: "+$(this).children(".card").attr('data-col-id')+" position: "+ i);
-	});
+	$("#containerHtml div.column").each(function(i){ });
 
 	this.handleDragStart = function(e) {
 		e.dataTransfer.effectAllowed = 'move';
