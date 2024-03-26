@@ -6,6 +6,7 @@ const path = require('node:path');
 const sqlite3 = require('sqlite3').verbose();
 const ct = fs.existsSync(path.join(app.getPath('userData'), 'shelly.db'))
 const db = new sqlite3.Database(path.join(app.getPath('userData'), 'shelly.db'));
+const http = require('http');
 let bonjour = require('bonjour')();
 let mainWindow;
 let currentDevice;
@@ -157,3 +158,25 @@ ipcMain.on('database:device', (event, data) => {
         mainWindow.webContents.send('responseDB',rows);
     });
 });
+
+
+ipcMain.on('http:getData', (event, data) => {
+    http.get('http://shellyswitch25-349454793ba5.local/shelly', res => {
+        let data = [];
+        console.log('Status Code:', res.statusCode);
+        res.on('data', chunk => {
+          data.push(chunk);
+        });
+      
+        res.on('end', () => {
+          console.log('Response ended: ');
+          const resp = JSON.parse(Buffer.concat(data).toString());
+          console.log(resp);
+          console.log(JSON.stringify(resp));
+      
+        });
+      }).on('error', err => {
+        console.log('Error: ', err.message);
+      });
+});
+
