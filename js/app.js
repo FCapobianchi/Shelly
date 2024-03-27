@@ -11,7 +11,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let devices = [];
 
     if(containerHtml){
-        ipcRenderer.send('database:device', {})
+        ipcRenderer.send('database:getDevices', {})
     }
 
 	ipcRenderer.on('responseDB',(e,devices)=>{

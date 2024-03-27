@@ -7,7 +7,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let devices;
 
     if(containerHtml){
-        ipcRenderer.send('database:device', {})
+        ipcRenderer.send('database:getDevices', {})
     }
 	ipcRenderer.on('responseDB',(e,data)=>{
         devices = (data !== undefined)?data:new Array();
@@ -79,7 +79,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 anchorAdd.classList.add("float-end");
                 anchorAdd.onclick = function() { 
                     let valori = data;
-                    ipcRenderer.send('shellyApi:getDevice', valori);                    
+                    ipcRenderer.send('database:addDevice', valori);                    
                 };
                 anchorAdd.appendChild(document.createTextNode("Add"));
                 cardbody.appendChild(anchorAdd);                    
@@ -100,13 +100,6 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         }
 	});
-
-                
-    ipcRenderer.on('shellyApi:device',(e,data)=>{
-        ipcRenderer.send('database:addDevice', data);
-    });
-
-    
 
     if(discoverBTN)    
         discoverBTN.addEventListener('click', ()=>{

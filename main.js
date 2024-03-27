@@ -10,6 +10,7 @@ const http = require('http');
 let bonjour = require('bonjour')();
 let mainWindow;
 let currentDevice;
+let message;
 
 if (!ct) {
     db.serialize(() => {
@@ -100,9 +101,21 @@ ipcMain.on('closeApp', (event,data)=>{
 	app.quit()
 });
 
+
+
+/** SEZIONE DI SCAMBIO DATI CON LE PAGINE */
 ipcMain.on('getDevice', (event,{})=>{
     mainWindow.webContents.send('responseDevice',currentDevice);
 });
+
+ipcMain.on('getMessage', (event,{})=>{
+    if(message!=null){
+        let data = message;
+        message = null;
+        mainWindow.webContents.send('showMessages',data);
+    }   
+});
+
 
 
 /** DISCOVERY SECTION VIA BONJOUR */
@@ -122,29 +135,40 @@ ipcMain.on('discoverDevice:stop', (event,data)=>{
 
 /** DATABASE SECTION  */
 ipcMain.on('database:get', (event,data)=>{
-    // var record = db.get("SELECT * FROM `devices` WHERE id = 1;");
-    // console.log(record);
+
 });
 
 ipcMain.on('database:add', (event,query)=>{
-    var record = db.run(query);
+
 });
 
-ipcMain.on('database:addDevice', (event,data)=>{
+ipcMain.on('database:addDevice', (event,device)=>{
     db.get("SELECT MAX(id) as max FROM devices;", (error, row) => {
-        let valori = [row.max??1,data.valori.txt.id,data.valori.type,data.valori.host,data.valori.txt.app]
+        let arrayValues = [row.max??1,device.txt.id,device.type,device.host,device.txt.app]
         let query = 'INSERT INTO devices VALUES(null,?,?,"","","device",?,?,?);';
-        db.run(query,valori,(error) => { 
-            if(data.device.auth){
-                db.get("SELECT * FROM `devices` WHERE device_id = ?;",[data.valori.txt.id], (error, row) => {
-                    currentDevice = row;
-                    mainWindow.loadFile('html/edit.html');
+        db.run(query,arrayValues,(error) => { 
+            http.get('http://'+device.host+'/shelly', response => {
+                let data = [];
+                response.on('data', chunk => {
+                    data.push(chunk);
                 });
+                response.on('end', () => {
+                    const json = JSON.parse(Buffer.concat(data).toString());
+                    db.get("SELECT * FROM `devices` WHERE device_id = ?;",[device.txt.id], (error, row) => {
+                        currentDevice = row;
+                        if(json.auth){
+                            message = {text:"Basic Auth present, please enter user and password",type:"warning"};
+                            mainWindow.loadFile('html/edit.html');
+                        }
+                        else {
+                            mainWindow.loadFile('html/devices.html');
+                        } 
+                    });
+                });
+            }).on('error', error => {
+                alert('Error: ', error.message);
+            });
 
-            }
-            else {
-                mainWindow.loadFile('html/devices.html');
-            } 
         });
     });
 });
@@ -161,31 +185,8 @@ ipcMain.on('database:update', (event,data)=>{
     });
 });
 
-ipcMain.on('database:device', (event, data) => {
+ipcMain.on('database:getDevices', (event, data) => {
     db.all("SELECT * FROM devices ORDER BY position ASC;", (error, rows) => {
         mainWindow.webContents.send('responseDB',rows);
     });
 });
-
-ipcMain.on('shellyApi:getDevice', (event, valori) => {
-    http.get('http://'+valori.host+'/shelly', res => {
-        let data = [];
-        console.log('valori:', valori);
-        console.log('Status Code:', res.statusCode);
-        res.on('data', chunk => {
-            data.push(chunk);
-        });
-      
-        res.on('end', () => {
-            console.log('Response ended: ');
-            const resp = JSON.parse(Buffer.concat(data).toString());
-            console.log(resp);
-            console.log(JSON.stringify(resp));
-            mainWindow.webContents.send('shellyApi:device',{valori:valori,device:resp});
-        });
-
-        }).on('error', err => {
-            console.log('Error: ', err.message);
-        });
-});
-
