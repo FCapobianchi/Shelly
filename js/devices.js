@@ -1,4 +1,5 @@
 const {ipcRenderer} = require('electron');
+window.$ = window.jQuery = require('jquery');
 
 window.addEventListener('DOMContentLoaded', () => {
 	const discoverBTN = document.getElementById("discoverBTN");

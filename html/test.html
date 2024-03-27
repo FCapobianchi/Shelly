@@ -27,13 +27,13 @@
 					<hr>
 					<ul class="nav nav-pills flex-column mb-auto">
 						<li>
-							<a href="#" class="nav-link text-white">
+							<a href="app.html" class="nav-link text-white changePageBTN">
 							<svg class="bi me-2" width="16" height="16"><use xlink:href="../node_modules/bootstrap-icons/bootstrap-icons.svg#speedometer2"/></svg>
 							Devices
 							</a>
 						</li>
 						<li>
-							<a href="devices.html" class="nav-link text-white changePageBTN" id="">
+							<a href="devices.html" class="nav-link text-white changePageBTN">
 							<svg class="bi me-2" width="16" height="16"><use xlink:href="../node_modules/bootstrap-icons/bootstrap-icons.svg#grid"/></svg>
 							Find devices
 							</a>
@@ -47,7 +47,7 @@
 							<strong class="d-block w-100">USER</strong>
 						</a>
 						<ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-							<li><a class="dropdown-item" href="#" id="btnTest">Test</a></li>
+							<li><a class="dropdown-item" href="#">New project...</a></li>
 							<li><a class="dropdown-item" href="#">Settings</a></li>
 							<li><a class="dropdown-item" href="#">Profile</a></li>
 							<li><hr class="dropdown-divider"></li>
@@ -65,20 +65,17 @@
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
-				</div>				  		
-				<div class="row">
-					<div class="col-lg-12 pb-4 pr-1">
-						<div id="spinner" class="spinner-border d-none" role="status"></div>	
-						<a href="devices.html" class="btn btn-primary float-end changePageBTN">Find devices</a>	
-					</div>				
 				</div>
-				<div id="containerHtml" class="row row-cols-lg-3 row-cols-md-2 row-cols-xs-1 g-4"></div>
+
+				<div id="containerHtml" class="row p-4">
+					<a href="http://shelly1-349454738e90.local" class="testSettings"> Test settings http://shelly1-349454738e90.local</a>
+				</div>
 			</main>
 		</div>
 	</div>
 
     <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/app.js"></script>
+    <script src="../js/test.js"></script>
 
   </body>	  
 </html>

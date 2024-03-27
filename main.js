@@ -12,12 +12,13 @@ let mainWindow;
 let currentDevice;
 let message;
 
+/** CHECK DELLA PRESENZA DEL DB */
 if (!ct) {
     db.serialize(() => {
         db.run('CREATE TABLE "devices" ( "id" INTEGER, "position" INTEGER, "device_id" TEXT, "user" TEXT, "password" TEXT, "name" TEXT, "type" TEXT, "host" TEXT,"app" TEXT, PRIMARY KEY("id" AUTOINCREMENT) )');
     });
 } 
-console.log(app.getPath('userData'));
+
 
 /**  SEZIONE DI GESTIONE FUNCTION DI DEFAULT DELL'APP */
 const createWindow = () => {
@@ -52,6 +53,7 @@ app.on('window-all-closed', () => {
 		app.quit();
 	}
 });
+
 
 /**  SEZIONE DI GESTIONE DELLE FINESTRE */
 ipcMain.on('openModal', (event,url)=>{
@@ -188,5 +190,24 @@ ipcMain.on('database:update', (event,data)=>{
 ipcMain.on('database:getDevices', (event, data) => {
     db.all("SELECT * FROM devices ORDER BY position ASC;", (error, rows) => {
         mainWindow.webContents.send('responseDB',rows);
+    });
+});
+
+ipcMain.on('shellyApi:settings', (event, data) => {
+    let url = new URL(data.url+'/settings');
+    url.username = "juice";
+    url.password = "Juicenet-2023";
+
+    http.get(url, response => {
+        let data = [];
+        response.on('data', chunk => {
+            data.push(chunk);
+        });
+        response.on('end', () => {
+            const json = JSON.parse(Buffer.concat(data).toString());
+            console.log(json);
+        });
+    }).on('error', error => {
+        alert('Error: ', error.message);
     });
 });

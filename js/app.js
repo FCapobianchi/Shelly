@@ -1,9 +1,6 @@
 const {ipcRenderer} = require('electron');
 window.$ = window.jQuery = require('jquery');
 
-// Shorthand for $( document ).ready()
-$(function() { });
-
 window.addEventListener('DOMContentLoaded', () => {
     const containerHtml = document.getElementById("containerHtml");
     let btnTest = document.getElementById("btnTest");
