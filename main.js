@@ -10,6 +10,7 @@ const http = require('http');
 let bonjour = require('bonjour')();
 let mainWindow;
 let currentDevice;
+let deviceInfo;
 let message;
 
 /** CHECK DELLA PRESENZA DEL DB */
@@ -98,6 +99,33 @@ ipcMain.on('openEdit', (event,device_id)=>{
     });
 });
 
+ipcMain.on('openInfo', (event,device_id)=>{
+    db.get("SELECT * FROM `devices` WHERE device_id = ?;",[device_id], (error, row) => {
+        
+        console.log(row);
+        let url = new URL('http://'+row.host+'/settings');
+        url.username = row.user;
+        url.password = row.password;
+    
+        http.get(url, response => {
+            let data = [];
+            response.on('data', chunk => {
+                data.push(chunk);
+            });
+            response.on('end', () => {
+                const json = JSON.parse(Buffer.concat(data).toString());
+                deviceInfo = json;
+                mainWindow.loadFile('html/info.html');
+            });
+        }).on('error', error => {
+            alert('Error: ', error.message);
+        });
+        
+    });
+
+
+});
+
 ipcMain.on('closeApp', (event,data)=>{
     mainWindow.close();
 	app.quit()
@@ -118,7 +146,9 @@ ipcMain.on('getMessage', (event,{})=>{
     }   
 });
 
-
+ipcMain.on('getDeviceInfo', (event,{})=>{
+    mainWindow.webContents.send('deviceInfo',deviceInfo);  
+});
 
 /** DISCOVERY SECTION VIA BONJOUR */
 ipcMain.on('discoverDevice:start', (event,data)=>{

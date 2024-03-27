@@ -22,6 +22,7 @@ window.addEventListener('DOMContentLoaded', () => {
             var em = document.createElement('em');
             var anchorOpen = document.createElement('a');
             var anchorEdit = document.createElement('a');
+            var anchorInfo = document.createElement('a');
 
             col.classList.add("column");
             col.setAttribute("draggable","true");
@@ -60,6 +61,7 @@ window.addEventListener('DOMContentLoaded', () => {
             anchorEdit.classList.add("btn");
             anchorEdit.classList.add("btn-secondary");
             anchorEdit.classList.add("float-end");
+            anchorEdit.classList.add("me-1");
             anchorEdit.onclick = function() { 
                 ipcRenderer.send('openEdit',devId);
             };
@@ -67,6 +69,18 @@ window.addEventListener('DOMContentLoaded', () => {
             cardbody.appendChild(anchorEdit);
             anchorEdit = null;
 
+            anchorInfo.classList.add("btn");
+            anchorInfo.classList.add("btn-info");
+            anchorInfo.classList.add("float-end");
+            anchorInfo.classList.add("me-1");
+            anchorInfo.onclick = function() { 
+                ipcRenderer.send('openInfo',devId);
+            };
+            anchorInfo.appendChild(document.createTextNode("Info"));
+            cardbody.appendChild(anchorInfo);
+            anchorInfo = null;
+
+            
             card.appendChild(cardbody);
             col.appendChild(card);
             if (containerHtml){
