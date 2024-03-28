@@ -1,5 +1,6 @@
 // Genero le variabili di ambiente
 const { app, BrowserWindow, ipcMain } = require('electron/main');
+const Store = require('electron-store')
 const fs = require('fs');
 const { event } = require('jquery');
 const path = require('node:path');
@@ -12,7 +13,9 @@ let mainWindow;
 let currentDevice;
 let deviceInfo;
 let message;
+let store;
 
+2
 /** CHECK DELLA PRESENZA DEL DB */
 if (!ct) {
     db.serialize(() => {
@@ -23,9 +26,10 @@ if (!ct) {
 
 /**  SEZIONE DI GESTIONE FUNCTION DI DEFAULT DELL'APP */
 const createWindow = () => {
+    store = new Store();
 	mainWindow = new BrowserWindow({
-        width: 1600,
-        height: 1200,
+        width: 1200,
+        height: 900,
         minWidth: 800,
         minHeight: 600,
         show: true,
@@ -38,6 +42,11 @@ const createWindow = () => {
 		} 
 	})
 	mainWindow.loadFile('./html/app.html');
+    mainWindow.setBounds(store.get('bounds'));
+    mainWindow.on('close', () => {
+        store.set('bounds', mainWindow.getBounds());
+    });
+
 }
 
 app.whenReady().then(() => {
@@ -46,7 +55,7 @@ app.whenReady().then(() => {
 		if (BrowserWindow.getAllWindows().length === 0) {
 			createWindow();
 		}
-	})
+	});
 });
 
 app.on('window-all-closed', () => {
