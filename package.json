@@ -7,7 +7,8 @@
     "start": "electron-forge start",
     "start-electron": "electron .",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "sign": "electron-osx-sign out/shelly-darwin-arm64/shelly.app --type=distribution"
   },
   "repository": {
     "type": "git",
