@@ -27,15 +27,15 @@
 					<hr>
 					<ul class="nav nav-pills flex-column mb-auto">
 						<li>
-							<a href="#" class="nav-link text-white">
+							<a href="app.html" class="nav-link text-white changePageBTN">
 							<svg class="bi me-2" width="16" height="16"><use xlink:href="../node_modules/bootstrap-icons/bootstrap-icons.svg#speedometer2"/></svg>
-							Devices
+							Dashboard
 							</a>
 						</li>
 						<li>
-							<a href="devices.html" class="nav-link text-white changePageBTN" id="">
+							<a href="devices.html" class="nav-link text-white changePageBTN">
 							<svg class="bi me-2" width="16" height="16"><use xlink:href="../node_modules/bootstrap-icons/bootstrap-icons.svg#grid"/></svg>
-							Find devices
+							Devices
 							</a>
 							
 						</li>
@@ -58,7 +58,7 @@
 			</nav>
 
 			<main class="col-md-9 ms-sm-auto col-lg-10 d-md-block pt-2">
-				<div id="" class="row p-4">				
+				<div class="row p-4">				
 					<div id="messageDiv" class="alert alert-dismissible fade show d-none" role="alert">
 						<span id="messageText">messaggio di testo</span>
 						<button type="button" class="close float-end" data-dismiss="alert" aria-label="Close">
@@ -69,10 +69,12 @@
 				<div class="row">
 					<div class="col-lg-12 pb-4 pr-1">
 						<div id="spinner" class="spinner-border d-none" role="status"></div>	
-						<a href="devices.html" class="btn btn-primary float-end changePageBTN">Find devices</a>	
+						<a href="devices.html" class="btn btn-primary float-end changePageBTN">Find new devices</a>	
 					</div>				
 				</div>
-				<div id="containerHtml" class="row row-cols-lg-3 row-cols-md-2 row-cols-xs-1 g-4"></div>
+				<div id="scroll">
+					<div id="containerHtml" class="row row-cols-lg-3 row-cols-md-2 row-cols-xs-1 g-4"></div>
+				</div>
 			</main>
 		</div>
 	</div>

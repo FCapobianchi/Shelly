@@ -29,13 +29,13 @@
 						<li>
 							<a href="app.html" class="nav-link text-white changePageBTN">
 							<svg class="bi me-2" width="16" height="16"><use xlink:href="../node_modules/bootstrap-icons/bootstrap-icons.svg#speedometer2"/></svg>
-							Devices
+							Dashboard
 							</a>
 						</li>
 						<li>
-							<a href="devices.html" class="nav-link text-white changePageBTN" id="">
+							<a href="devices.html" class="nav-link text-white changePageBTN">
 							<svg class="bi me-2" width="16" height="16"><use xlink:href="../node_modules/bootstrap-icons/bootstrap-icons.svg#grid"/></svg>
-							Find devices
+							Devices
 							</a>
 							
 						</li>
@@ -58,7 +58,7 @@
 			</nav>
 
 			<main class="col-md-9 ms-sm-auto col-lg-10 d-md-block pt-2">
-				<div id="" class="row p-4">				
+				<div class="row p-4">				
 					<div id="messageDiv" class="alert alert-dismissible fade show d-none" role="alert">
 						<span id="messageText">messaggio di testo</span>
 						<button type="button" class="close float-end" data-dismiss="alert" aria-label="Close">
@@ -66,45 +66,46 @@
 						</button>
 					</div>
 				</div>
-
-				<div id="containerHtml" class="row p-4">
-					<div class="col border rounded">
-						<form id="editForm" class="pt-4">
-							<div class="mb-3">
-								<label for="systemId" class="form-label">SYSTEM ID</label>
-								<input type="text" class="form-control" id="systemId" name="id" aria-describedby="systemIdDesc" readonly="readonly">
-								<div id="systemIdDesc" class="form-text">Application device ID.</div>
-							</div>
-	
-							<div class="mb-3">
-								<label for="deviceId" class="form-label">DEVICE ID</label>
-								<input type="text" class="form-control" id="deviceId" name="device_id" aria-describedby="deviceIdDesc" readonly="readonly">
-								<div id="deviceIdDesc" class="form-text">System device ID.</div>
-							</div>
-	
-							<div class="mb-3">
-								<label for="deviceName" class="form-label">Name </label>
-								<input type="text" class="form-control" id="deviceName" name="name" aria-describedby="deviceNameDesc">
-								  <div id="deviceNameDesc" class="form-text">Application name.</div>
-							</div>
-	
-							<div class="mb-3">
-								<label for="authUser" class="form-label">Auth user</label>
-								<input type="text" class="form-control" id="authUser" name="user" aria-describedby="authUserDesc">
-								<div id="authUserDesc" class="form-text">Username used for authentication</div>
-							</div>
-	
-							<div class="mb-3">
-								<label for="authPassword" class="form-label">Auth password</label>
-								<input type="password" class="form-control" id="authPassword" name="password" aria-describedby="authPasswordDesc">
-								<div id="authPasswordDesc" class="form-text">Password used for authentication</div>
-							</div>
-	
-							<div class="mb-3">
-								<button type="submit" class="btn btn-primary" id="submitForm">SUBMIT</button>
-							</div>
-							
-						</form>
+				<div id="scroll">
+					<div id="containerHtml" class="row p-4">
+						<div class="col border rounded">
+							<form id="editForm" class="pt-4">
+								<div class="mb-3">
+									<label for="systemId" class="form-label">SYSTEM ID</label>
+									<input type="text" class="form-control" id="systemId" name="id" aria-describedby="systemIdDesc" readonly="readonly">
+									<div id="systemIdDesc" class="form-text">Application device ID.</div>
+								</div>
+		
+								<div class="mb-3">
+									<label for="deviceId" class="form-label">DEVICE ID</label>
+									<input type="text" class="form-control" id="deviceId" name="device_id" aria-describedby="deviceIdDesc" readonly="readonly">
+									<div id="deviceIdDesc" class="form-text">System device ID.</div>
+								</div>
+		
+								<div class="mb-3">
+									<label for="deviceName" class="form-label">Name </label>
+									<input type="text" class="form-control" id="deviceName" name="name" aria-describedby="deviceNameDesc">
+									<div id="deviceNameDesc" class="form-text">Application name.</div>
+								</div>
+		
+								<div class="mb-3">
+									<label for="authUser" class="form-label">Auth user</label>
+									<input type="text" class="form-control" id="authUser" name="user" aria-describedby="authUserDesc">
+									<div id="authUserDesc" class="form-text">Username used for authentication</div>
+								</div>
+		
+								<div class="mb-3">
+									<label for="authPassword" class="form-label">Auth password</label>
+									<input type="password" class="form-control" id="authPassword" name="password" aria-describedby="authPasswordDesc">
+									<div id="authPasswordDesc" class="form-text">Password used for authentication</div>
+								</div>
+		
+								<div class="mb-3">
+									<button type="submit" class="btn btn-primary" id="submitForm">SUBMIT</button>
+								</div>
+								
+							</form>
+						</div>
 					</div>
 				</div>
 			</main>
@@ -112,7 +113,7 @@
 	</div>
 
     <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/edit.js"></script>
+    <script src="../js/editDevice.js"></script>
 
   </body>	  
 </html>

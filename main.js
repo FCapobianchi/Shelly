@@ -20,6 +20,7 @@ let store;
 if (!ct) {
     db.serialize(() => {
         db.run('CREATE TABLE "devices" ( "id" INTEGER, "position" INTEGER, "device_id" TEXT, "user" TEXT, "password" TEXT, "name" TEXT, "type" TEXT, "host" TEXT,"app" TEXT, PRIMARY KEY("id" AUTOINCREMENT) )');
+        db.run('CREATE TABLE "relays" ( "id" INTEGER, "device_id" TEXT, "relay" INTEGER, "name" TEXT, "appliance_type" TEXT, "ison" INTEGER, "has_timer" INTEGER, "default_state" TEXT, "btn_type" TEXT,"btn_reverse" INTEGER, "auto_on" INTEGER, "auto_off" INTEGER, "power" INTEGER, PRIMARY KEY("id" AUTOINCREMENT))');
     });
 } 
 
@@ -34,6 +35,8 @@ const createWindow = () => {
         minHeight: 600,
         show: true,
         roundedCorners: true,
+        scrollBounce: true,
+        useContentSize: true,
 		webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,	
@@ -104,7 +107,7 @@ ipcMain.on('openEdit', (event,device_id)=>{
     console.log(device_id);
     db.get("SELECT * FROM `devices` WHERE device_id = ?;",[device_id], (error, row) => {
         currentDevice = row;
-        mainWindow.loadFile('html/edit.html');
+        mainWindow.loadFile('html/editDevice.html');
     });
 });
 
@@ -199,7 +202,7 @@ ipcMain.on('database:addDevice', (event,device)=>{
                         currentDevice = row;
                         if(json.auth){
                             message = {text:"Basic Auth present, please enter user and password",type:"warning"};
-                            mainWindow.loadFile('html/edit.html');
+                            mainWindow.loadFile('html/editDevice.html');
                         }
                         else {
                             mainWindow.loadFile('html/devices.html');
@@ -215,7 +218,27 @@ ipcMain.on('database:addDevice', (event,device)=>{
 });
 
 ipcMain.on('database:updateDevice', (event,data)=>{
-    db.run(data.query,data.valori,(error) => { });
+    console.log(data);
+    db.run(data.query,data.valori,(error) => { 
+        checkRelays(data.valori);
+        if(data.changePage) {
+            mainWindow.loadFile(data.changePage);
+        }
+
+    });
+});
+
+ipcMain.on('database:deleteDevice', (event,data)=>{
+    console.log(data);
+    let queryRelays = 'DELETE FROM relays WHERE device_id = ?';
+    db.run(queryRelays,[data.devId],(error) => { 
+        console.log(error);
+    });
+    let queryDevice = 'DELETE FROM devices WHERE device_id = ?';
+    db.run(queryDevice,[data.devId],(error) => { 
+        console.log(error);
+        mainWindow.loadFile('html/devices.html');
+    });
 });
 
 ipcMain.on('database:update', (event,data)=>{
@@ -230,6 +253,18 @@ ipcMain.on('database:getDevices', (event, data) => {
     db.all("SELECT * FROM devices ORDER BY position ASC;", (error, rows) => {
         mainWindow.webContents.send('responseDB',rows);
     });
+});
+
+ipcMain.on('database:getRelays', (event, data) => {
+
+    db.all("SELECT * FROM devices ORDER BY position ASC;", (error, rows) => {
+        let devices = rows;
+        db.all("SELECT * FROM relays ORDER BY id ASC;", (error, rows) => {
+            mainWindow.webContents.send('responseRelays',rows,devices);
+        });
+    });
+
+
 });
 
 ipcMain.on('shellyApi:settings', (event, data) => {
@@ -250,3 +285,108 @@ ipcMain.on('shellyApi:settings', (event, data) => {
         alert('Error: ', error.message);
     });
 });
+
+ipcMain.on('shellyApi:toggle', (event, cRelay, cDevice, status) => {
+    console.log(cDevice);
+    let url = new URL(cDevice.type+'://'+cDevice.host+'/relay/'+cRelay.relay);
+    url.username = cDevice.user;
+    url.password = cDevice.password;
+    url.searchParams.set('turn',status);
+    console.log(url);
+    http.get(url, response => {
+        let data = [];
+        response.on('data', chunk => {
+            data.push(chunk);
+        });
+        response.on('end', () => {
+            const json = JSON.parse(Buffer.concat(data).toString());
+            //console.log(json);
+        });
+    }).on('error', error => {
+        console.log('Error: ', error.message);
+    });
+
+});
+
+// ipcMain.on('shellyApi:toggle', (event, relay, device) => {
+//     let url = new URL(device.type+'://'+device.host+'/relay/'+relay.relay);
+//     url.username = device.user;
+//     url.password = device.password;
+//     http.get(url, response => {
+//         let data = [];
+//         response.on('data', chunk => {
+//             data.push(chunk);
+//         });
+//         console.log(data);
+//         response.on('end', () => {
+//             const json = JSON.parse(Buffer.concat(data).toString());
+//             console.log(json);
+//         });
+//     }).on('error', error => {
+//         console.log('Error: ', error.message);
+//     });
+
+
+//     url = new URL(device.type+'://'+device.host+'/relay/'+relay.relay);
+//     url.username = device.user;
+//     url.password = device.password;
+//     http.get(url, response => {
+//         let data = [];
+//         response.on('data', chunk => {
+//             data.push(chunk);
+//         });
+//         console.log(data);
+//         response.on('end', () => {
+//             const json = JSON.parse(Buffer.concat(data).toString());
+//             console.log(json);
+//         });
+//     }).on('error', error => {
+//         console.log('Error: ', error.message);
+//     });
+    
+
+
+// });
+
+const checkRelays = (valori) => {
+    let device_id = currentDevice.device_id??valori[0];
+    console.log(device_id);
+
+    db.get("SELECT * FROM `devices` WHERE device_id = ?;",[device_id], (error, row) => {
+        currentDevice = row;
+        console.log(currentDevice);
+        if(row !== undefined){
+            db.get("SELECT * FROM `relays` WHERE device_id = ?;",[device_id], (error, rows) => {
+                console.log(rows);
+                if(rows === undefined){
+                    let url = new URL(currentDevice.type+"://"+currentDevice.host+'/settings');
+                    url.username = currentDevice.user;
+                    url.password = currentDevice.password;
+
+                    http.get(url, response => {
+                        let data = [];
+                        response.on('data', chunk => {
+                            data.push(chunk);
+                        });
+                        response.on('end', () => {
+                            const json = JSON.parse(Buffer.concat(data).toString());
+                            console.log(json)
+                            json.relays.forEach((relay,index) => {
+                                let arrayValues = [currentDevice.device_id, index, relay.name, relay.appliance_type, relay.ison, relay.has_timer, relay.default_state, relay.btn_type, relay.btn_reverse, relay.auto_on, relay.auto_off, relay.power];
+                                let query = 'INSERT INTO relays VALUES(null,?,?,?,?,?,?,?,?,?,?,?,?);';
+                                console.log(query);
+                                console.log(arrayValues);
+                                db.run(query,arrayValues,(error) => { 
+                                    console.log('Error: ', error);
+                                });
+                            });
+                        });
+                    }).on('error', error => {
+                        console.log('Error: ', error.message);
+                    });
+                }
+            });
+        }
+    });
+
+}

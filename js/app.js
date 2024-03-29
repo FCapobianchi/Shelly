@@ -5,87 +5,92 @@ window.addEventListener('DOMContentLoaded', () => {
     const containerHtml = document.getElementById("containerHtml");
     let btnTest = document.getElementById("btnTest");
 
-    let devices = [];
+    let relays = [];
 
     if(containerHtml){
-        ipcRenderer.send('database:getDevices', {})
+        ipcRenderer.send('database:getRelays', {})
     }
 
-	ipcRenderer.on('responseDB',(e,devices)=>{
-		devices.sort((a, b) => (a.position > b.position) ? 1 : -1);
-        for(device of devices){
-            var col = document.createElement('div');
-            var card = document.createElement('div');
-            var cardbody = document.createElement('div');
-            var h5 = document.createElement('h5');
-            var p = document.createElement('p');
-            var em = document.createElement('em');
-            var anchorOpen = document.createElement('a');
-            var anchorEdit = document.createElement('a');
-            var anchorInfo = document.createElement('a');
+	ipcRenderer.on('responseRelays',(e,relays,devices)=>{
+		relays.sort((a, b) => (a.id > b.id) ? 1 : -1);
+        for(relay of relays){
+            let device = null;
+            let cDevice = null;
+            let cRelay = null;
+        
+            device = devices.find(obj => obj.device_id === relay.device_id);
+            cDevice = device;
+            cRelay = relay;                
+            console.log(device);
+            console.log(relay);
+            let col = document.createElement('div');
+            let card = document.createElement('div');
+            let cardbody = document.createElement('div');
+            let h5 = document.createElement('h5');
+            let p = document.createElement('p');
+            let em = document.createElement('em');
+            let anchorOn = document.createElement('a');
+            let anchorOff = document.createElement('a');
+            // var anchorEdit = document.createElement('a');
+            // var anchorInfo = document.createElement('a');
 
             col.classList.add("column");
             col.setAttribute("draggable","true");
 
             card.classList.add("card");
-            card.setAttribute("data-col-id",device.id);
-            card.setAttribute("data-col-pos",device.id);			
+            card.setAttribute("data-col-id",relay.id);
+            card.setAttribute("data-col-pos",relay.id);			
             cardbody.classList.add("card-body");
     
             h5.classList.add("card-title");
-            h5.appendChild(document.createTextNode(device.name));
+            h5.appendChild(document.createTextNode(relay.name));
             cardbody.appendChild(h5);
 
             p.classList.add("card-text");
-            p.appendChild(document.createTextNode(device.device_id));
-            em.appendChild(document.createTextNode(device.app));
+            p.appendChild(document.createTextNode(relay.id));
+            em.appendChild(document.createTextNode(relay.default_state));
             h5.appendChild(document.createElement("hr"));
             h5.appendChild(em);
             cardbody.appendChild(p);
 
-            let url = device.type+'://';
-            if(device.user) {
-                url +=device.user+':'+device.password+'@';
-            }
-            url += device.host;            
-            anchorOpen.classList.add("btn");
-            anchorOpen.classList.add("btn-primary");
-            anchorOpen.onclick = function() { 
-                ipcRenderer.send('openModal',url);
+            anchorOn.classList.add("btn");
+            anchorOn.classList.add("btn-primary");
+            anchorOn.onclick = function() { 
+                ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'on');
             };
-            anchorOpen.appendChild(document.createTextNode("Open view"));  
-            cardbody.appendChild(anchorOpen);
+            anchorOn.appendChild(document.createTextNode("ON"));  
+            cardbody.appendChild(anchorOn);
 
-            let devId = device.device_id;
 
-            anchorEdit.classList.add("btn");
-            anchorEdit.classList.add("btn-secondary");
-            anchorEdit.classList.add("float-end");
-            anchorEdit.classList.add("me-1");
-            anchorEdit.onclick = function() { 
-                ipcRenderer.send('openEdit',devId);
+            anchorOff.classList.add("btn");
+            anchorOff.classList.add("btn-secondary");
+            anchorOff.classList.add("float-end");
+            anchorOff.classList.add("me-1");
+            anchorOff.onclick = function() {               
+                ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'off');
             };
-            anchorEdit.appendChild(document.createTextNode("Edit"));
-            cardbody.appendChild(anchorEdit);
+            anchorOff.appendChild(document.createTextNode("OFF"));
+            cardbody.appendChild(anchorOff);
             anchorEdit = null;
 
-            anchorInfo.classList.add("btn");
-            anchorInfo.classList.add("btn-info");
-            anchorInfo.classList.add("float-end");
-            anchorInfo.classList.add("me-1");
-            anchorInfo.onclick = function() { 
-                ipcRenderer.send('openInfo',devId);
-            };
-            anchorInfo.appendChild(document.createTextNode("Info"));
-            cardbody.appendChild(anchorInfo);
-            anchorInfo = null;
-
+            // anchorInfo.classList.add("btn");
+            // anchorInfo.classList.add("btn-info");
+            // anchorInfo.classList.add("float-end");
+            // anchorInfo.classList.add("me-1");
+            // anchorInfo.onclick = function() { 
+            //     ipcRenderer.send('openInfo',devId);
+            // };
+            // anchorInfo.appendChild(document.createTextNode("Info"));
+            // cardbody.appendChild(anchorInfo);
+            // anchorInfo = null;
+            
             
             card.appendChild(cardbody);
             col.appendChild(card);
             if (containerHtml){
                 containerHtml.appendChild(col);
             }
+            //device = null;
         };        
         dragCol();
 	});
@@ -152,10 +157,10 @@ let dragCol = (function() {
 		[].forEach.call(cols_, function(col,index) {
 			col.classList.remove('over');
 			col.classList.remove('moving');
-			let card = col.querySelector('.card');
-			let query = 'UPDATE devices SET position = ? WHERE id = ?';
-			ipcRenderer.send('database:updateDevice', {query: query, valori:[index,card.getAttribute("data-col-id")]});	
-			window.location.reload();		
+			// let card = col.querySelector('.card');
+			// let query = 'UPDATE devices SET position = ? WHERE id = ?';
+			// ipcRenderer.send('database:update', {query: query, valori:[index,card.getAttribute("data-col-id")]});	
+			//window.location.reload();		
 		});
 	};
 
