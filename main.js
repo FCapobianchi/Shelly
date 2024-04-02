@@ -20,7 +20,7 @@ let store;
 if (!ct) {
     db.serialize(() => {
         db.run('CREATE TABLE "devices" ( "id" INTEGER, "position" INTEGER, "device_id" TEXT, "user" TEXT, "password" TEXT, "name" TEXT, "type" TEXT, "host" TEXT,"app" TEXT, PRIMARY KEY("id" AUTOINCREMENT) )');
-        db.run('CREATE TABLE "relays" ( "id" INTEGER, "device_id" TEXT, "relay" INTEGER, "name" TEXT, "appliance_type" TEXT, "ison" INTEGER, "has_timer" INTEGER, "default_state" TEXT, "btn_type" TEXT,"btn_reverse" INTEGER, "auto_on" INTEGER, "auto_off" INTEGER, "power" INTEGER, PRIMARY KEY("id" AUTOINCREMENT))');
+        db.run('CREATE TABLE "relays" ("id" INTEGER,"device_id" TEXT,"relay" INTEGER,"name" TEXT,"appliance_type" TEXT,"ison" INTEGER,"has_timer" INTEGER,"default_state" TEXT,"btn_type" TEXT,"btn_reverse" INTEGER,"auto_on" INTEGER,"auto_off" INTEGER,"power" INTEGER,"position" INTEGER,"mode" TEXT,PRIMARY KEY("id" AUTOINCREMENT))');
     });
 } 
 
@@ -205,6 +205,7 @@ ipcMain.on('database:addDevice', (event,device)=>{
                             mainWindow.loadFile('html/editDevice.html');
                         }
                         else {
+                            checkRelays([]);
                             mainWindow.loadFile('html/devices.html');
                         } 
                     });
@@ -288,10 +289,23 @@ ipcMain.on('shellyApi:settings', (event, data) => {
 
 ipcMain.on('shellyApi:toggle', (event, cRelay, cDevice, status) => {
     console.log(cDevice);
-    let url = new URL(cDevice.type+'://'+cDevice.host+'/relay/'+cRelay.relay);
+    console.log(cRelay.mode);
+
+    let url = "";
+    switch(cRelay.mode){
+        case "roller":
+            // open, close and stop
+            url = new URL(cDevice.type+'://'+cDevice.host+'/roller/'+cRelay.relay);
+            url.searchParams.set('go',status);
+            break;
+        default:
+            url = new URL(cDevice.type+'://'+cDevice.host+'/relay/'+cRelay.relay);
+            url.searchParams.set('turn',status);            
+    }
+
     url.username = cDevice.user;
     url.password = cDevice.password;
-    url.searchParams.set('turn',status);
+
     console.log(url);
     http.get(url, response => {
         let data = [];
@@ -371,15 +385,27 @@ const checkRelays = (valori) => {
                         response.on('end', () => {
                             const json = JSON.parse(Buffer.concat(data).toString());
                             console.log(json)
-                            json.relays.forEach((relay,index) => {
-                                let arrayValues = [currentDevice.device_id, index, relay.name, relay.appliance_type, relay.ison, relay.has_timer, relay.default_state, relay.btn_type, relay.btn_reverse, relay.auto_on, relay.auto_off, relay.power];
-                                let query = 'INSERT INTO relays VALUES(null,?,?,?,?,?,?,?,?,?,?,?,?);';
+                            if(json.device.mode == 'relay'){
+                                json.relays.forEach((relay,index) => {
+                                    let arrayValues = [currentDevice.device_id, index, relay.name, relay.appliance_type, relay.ison, relay.has_timer, relay.default_state, relay.btn_type, relay.btn_reverse, relay.auto_on, relay.auto_off, relay.power,0,json.device.mode];
+                                    let query = 'INSERT INTO relays VALUES(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?);';
+                                    // console.log(query);
+                                    // console.log(arrayValues);
+                                    db.run(query,arrayValues,(error) => { 
+                                        console.log('Error: ', error);
+                                    });
+                                });
+                            }
+                            if(json.device.mode == 'roller'){
+                                let arrayValues = [currentDevice.device_id, 0, json.name, '', '', '', json.rollers[0].input_mode, '', '', '', '', '',0,json.device.mode];
+                                let query = 'INSERT INTO relays VALUES(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?);';
                                 console.log(query);
                                 console.log(arrayValues);
                                 db.run(query,arrayValues,(error) => { 
                                     console.log('Error: ', error);
-                                });
-                            });
+                                });                                
+                            }
+
                         });
                     }).on('error', error => {
                         console.log('Error: ', error.message);

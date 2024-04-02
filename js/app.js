@@ -4,7 +4,6 @@ window.$ = window.jQuery = require('jquery');
 window.addEventListener('DOMContentLoaded', () => {
     const containerHtml = document.getElementById("containerHtml");
     let btnTest = document.getElementById("btnTest");
-
     let relays = [];
 
     if(containerHtml){
@@ -12,7 +11,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
 	ipcRenderer.on('responseRelays',(e,relays,devices)=>{
-		relays.sort((a, b) => (a.id > b.id) ? 1 : -1);
+		relays.sort((a, b) => (a.position > b.position) ? 1 : -1);
         for(relay of relays){
             let device = null;
             let cDevice = null;
@@ -31,6 +30,7 @@ window.addEventListener('DOMContentLoaded', () => {
             let em = document.createElement('em');
             let anchorOn = document.createElement('a');
             let anchorOff = document.createElement('a');
+            let anchoStop = document.createElement('a');
             // var anchorEdit = document.createElement('a');
             // var anchorInfo = document.createElement('a');
 
@@ -53,25 +53,64 @@ window.addEventListener('DOMContentLoaded', () => {
             h5.appendChild(em);
             cardbody.appendChild(p);
 
-            anchorOn.classList.add("btn");
-            anchorOn.classList.add("btn-primary");
-            anchorOn.onclick = function() { 
-                ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'on');
-            };
-            anchorOn.appendChild(document.createTextNode("ON"));  
-            cardbody.appendChild(anchorOn);
+            if(cRelay.mode==="roller"){
+                anchorOn.classList.add("btn");
+                anchorOn.classList.add("btn-primary");
+                anchorOn.onclick = function() { 
+                    ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'open');
+                };
+                anchorOn.appendChild(document.createTextNode("OPEN"));  
+                cardbody.appendChild(anchorOn);
+                anchorOn = null;
+    
+                anchorOff.classList.add("btn");
+                anchorOff.classList.add("btn-secondary");
+                anchorOff.classList.add("float-end");
+                anchorOff.classList.add("me-1");
+                anchorOff.onclick = function() {               
+                    ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'close');
+                };
+                anchorOff.appendChild(document.createTextNode("close"));
+                cardbody.appendChild(anchorOff);
+                anchorOff = null;
+
+                anchoStop.classList.add("btn");
+                anchoStop.classList.add("btn-info");
+                anchoStop.classList.add("float-end");
+                anchoStop.classList.add("me-1");
+                anchoStop.onclick = function() {               
+                    ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'stop');
+                };
+                anchoStop.appendChild(document.createTextNode("stop"));
+                cardbody.appendChild(anchoStop);
+                anchoStop = null;
 
 
-            anchorOff.classList.add("btn");
-            anchorOff.classList.add("btn-secondary");
-            anchorOff.classList.add("float-end");
-            anchorOff.classList.add("me-1");
-            anchorOff.onclick = function() {               
-                ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'off');
-            };
-            anchorOff.appendChild(document.createTextNode("OFF"));
-            cardbody.appendChild(anchorOff);
-            anchorEdit = null;
+
+            }
+            else {
+                anchorOn.classList.add("btn");
+                anchorOn.classList.add("btn-primary");
+                anchorOn.onclick = function() { 
+                    ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'on');
+                };
+                anchorOn.appendChild(document.createTextNode("ON"));  
+                cardbody.appendChild(anchorOn);
+                anchorOn = null;
+    
+                anchorOff.classList.add("btn");
+                anchorOff.classList.add("btn-secondary");
+                anchorOff.classList.add("float-end");
+                anchorOff.classList.add("me-1");
+                anchorOff.onclick = function() {               
+                    ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'off');
+                };
+                anchorOff.appendChild(document.createTextNode("OFF"));
+                cardbody.appendChild(anchorOff);
+                anchorOff = null;
+            }
+
+
 
             // anchorInfo.classList.add("btn");
             // anchorInfo.classList.add("btn-info");
@@ -157,9 +196,9 @@ let dragCol = (function() {
 		[].forEach.call(cols_, function(col,index) {
 			col.classList.remove('over');
 			col.classList.remove('moving');
-			// let card = col.querySelector('.card');
-			// let query = 'UPDATE devices SET position = ? WHERE id = ?';
-			// ipcRenderer.send('database:update', {query: query, valori:[index,card.getAttribute("data-col-id")]});	
+			let card = col.querySelector('.card');
+			let query = 'UPDATE relays SET position = ? WHERE id = ?';
+			ipcRenderer.send('database:update', {query: query, valori:[index,card.getAttribute("data-col-id")]});	
 			//window.location.reload();		
 		});
 	};
