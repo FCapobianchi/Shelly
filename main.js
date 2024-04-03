@@ -104,7 +104,6 @@ ipcMain.on('changePage', (event,data)=>{
 });
 
 ipcMain.on('openEdit', (event,device_id)=>{
-    console.log(device_id);
     db.get("SELECT * FROM `devices` WHERE device_id = ?;",[device_id], (error, row) => {
         currentDevice = row;
         mainWindow.loadFile('html/editDevice.html');
@@ -113,8 +112,6 @@ ipcMain.on('openEdit', (event,device_id)=>{
 
 ipcMain.on('openInfo', (event,device_id)=>{
     db.get("SELECT * FROM `devices` WHERE device_id = ?;",[device_id], (error, row) => {
-        
-        console.log(row);
         let url = new URL('http://'+row.host+'/settings');
         url.username = row.user;
         url.password = row.password;
@@ -144,7 +141,6 @@ ipcMain.on('closeApp', (event,data)=>{
 });
 
 
-
 /** SEZIONE DI SCAMBIO DATI CON LE PAGINE */
 ipcMain.on('getDevice', (event,{})=>{
     mainWindow.webContents.send('responseDevice',currentDevice);
@@ -161,6 +157,7 @@ ipcMain.on('getMessage', (event,{})=>{
 ipcMain.on('getDeviceInfo', (event,{})=>{
     mainWindow.webContents.send('deviceInfo',deviceInfo);  
 });
+
 
 /** DISCOVERY SECTION VIA BONJOUR */
 ipcMain.on('discoverDevice:start', (event,data)=>{
@@ -219,7 +216,6 @@ ipcMain.on('database:addDevice', (event,device)=>{
 });
 
 ipcMain.on('database:updateDevice', (event,data)=>{
-    console.log(data);
     db.run(data.query,data.valori,(error) => { 
         checkRelays(data.valori);
         if(data.changePage) {
@@ -230,14 +226,11 @@ ipcMain.on('database:updateDevice', (event,data)=>{
 });
 
 ipcMain.on('database:deleteDevice', (event,data)=>{
-    console.log(data);
     let queryRelays = 'DELETE FROM relays WHERE device_id = ?';
     db.run(queryRelays,[data.devId],(error) => { 
-        console.log(error);
     });
     let queryDevice = 'DELETE FROM devices WHERE device_id = ?';
     db.run(queryDevice,[data.devId],(error) => { 
-        console.log(error);
         mainWindow.loadFile('html/devices.html');
     });
 });
@@ -280,7 +273,6 @@ ipcMain.on('shellyApi:settings', (event, data) => {
         });
         response.on('end', () => {
             const json = JSON.parse(Buffer.concat(data).toString());
-            console.log(json);
         });
     }).on('error', error => {
         alert('Error: ', error.message);
@@ -288,13 +280,10 @@ ipcMain.on('shellyApi:settings', (event, data) => {
 });
 
 ipcMain.on('shellyApi:toggle', (event, cRelay, cDevice, status) => {
-    console.log(cDevice);
-    console.log(cRelay.mode);
 
     let url = "";
     switch(cRelay.mode){
         case "roller":
-            // open, close and stop
             url = new URL(cDevice.type+'://'+cDevice.host+'/roller/'+cRelay.relay);
             url.searchParams.set('go',status);
             break;
@@ -305,8 +294,6 @@ ipcMain.on('shellyApi:toggle', (event, cRelay, cDevice, status) => {
 
     url.username = cDevice.user;
     url.password = cDevice.password;
-
-    console.log(url);
     http.get(url, response => {
         let data = [];
         response.on('data', chunk => {
@@ -314,64 +301,21 @@ ipcMain.on('shellyApi:toggle', (event, cRelay, cDevice, status) => {
         });
         response.on('end', () => {
             const json = JSON.parse(Buffer.concat(data).toString());
-            //console.log(json);
         });
     }).on('error', error => {
-        console.log('Error: ', error.message);
+        //console.log('Error: ', error.message);
     });
 
 });
 
-// ipcMain.on('shellyApi:toggle', (event, relay, device) => {
-//     let url = new URL(device.type+'://'+device.host+'/relay/'+relay.relay);
-//     url.username = device.user;
-//     url.password = device.password;
-//     http.get(url, response => {
-//         let data = [];
-//         response.on('data', chunk => {
-//             data.push(chunk);
-//         });
-//         console.log(data);
-//         response.on('end', () => {
-//             const json = JSON.parse(Buffer.concat(data).toString());
-//             console.log(json);
-//         });
-//     }).on('error', error => {
-//         console.log('Error: ', error.message);
-//     });
-
-
-//     url = new URL(device.type+'://'+device.host+'/relay/'+relay.relay);
-//     url.username = device.user;
-//     url.password = device.password;
-//     http.get(url, response => {
-//         let data = [];
-//         response.on('data', chunk => {
-//             data.push(chunk);
-//         });
-//         console.log(data);
-//         response.on('end', () => {
-//             const json = JSON.parse(Buffer.concat(data).toString());
-//             console.log(json);
-//         });
-//     }).on('error', error => {
-//         console.log('Error: ', error.message);
-//     });
-    
-
-
-// });
-
 const checkRelays = (valori) => {
-    let device_id = currentDevice.device_id??valori[0];
-    console.log(device_id);
+    let device_id = currentDevice.device_id;
+    if(device_id === null) device_id = valori[0];
 
     db.get("SELECT * FROM `devices` WHERE device_id = ?;",[device_id], (error, row) => {
         currentDevice = row;
-        console.log(currentDevice);
         if(row !== undefined){
             db.get("SELECT * FROM `relays` WHERE device_id = ?;",[device_id], (error, rows) => {
-                console.log(rows);
                 if(rows === undefined){
                     let url = new URL(currentDevice.type+"://"+currentDevice.host+'/settings');
                     url.username = currentDevice.user;
@@ -385,30 +329,27 @@ const checkRelays = (valori) => {
                         response.on('end', () => {
                             const json = JSON.parse(Buffer.concat(data).toString());
                             console.log(json)
-                            if(json.device.mode == 'relay'){
+                            if(json.device.mode === 'relay' || json.mode === 'relay'){
                                 json.relays.forEach((relay,index) => {
                                     let arrayValues = [currentDevice.device_id, index, relay.name, relay.appliance_type, relay.ison, relay.has_timer, relay.default_state, relay.btn_type, relay.btn_reverse, relay.auto_on, relay.auto_off, relay.power,0,json.device.mode];
                                     let query = 'INSERT INTO relays VALUES(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?);';
-                                    // console.log(query);
-                                    // console.log(arrayValues);
+
                                     db.run(query,arrayValues,(error) => { 
-                                        console.log('Error: ', error);
+                                        //console.log('Error: ', error);
                                     });
                                 });
                             }
                             if(json.device.mode == 'roller'){
                                 let arrayValues = [currentDevice.device_id, 0, json.name, '', '', '', json.rollers[0].input_mode, '', '', '', '', '',0,json.device.mode];
                                 let query = 'INSERT INTO relays VALUES(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?);';
-                                console.log(query);
-                                console.log(arrayValues);
                                 db.run(query,arrayValues,(error) => { 
-                                    console.log('Error: ', error);
+                                    //console.log('Error: ', error);
                                 });                                
                             }
 
                         });
                     }).on('error', error => {
-                        console.log('Error: ', error.message);
+                        //console.log('Error: ', error.message);
                     });
                 }
             });
