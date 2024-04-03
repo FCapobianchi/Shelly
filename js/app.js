@@ -41,49 +41,52 @@ window.addEventListener('DOMContentLoaded', () => {
             card.setAttribute("data-col-id",relay.id);
             card.setAttribute("data-col-pos",relay.id);			
             cardbody.classList.add("card-body");
-    
+
             h5.classList.add("card-title");
             h5.appendChild(document.createTextNode(relay.name));
             cardbody.appendChild(h5);
 
             p.classList.add("card-text");
-            p.appendChild(document.createTextNode(relay.id));
+            p.classList.add("d-flex");
+            p.classList.add("justify-content-between");
+            //p.appendChild(document.createTextNode(relay.id));
             em.appendChild(document.createTextNode(relay.default_state));
             h5.appendChild(document.createElement("hr"));
             h5.appendChild(em);
-            cardbody.appendChild(p);
+            
 
             if(cRelay.mode==="roller"){
                 anchorOn.classList.add("btn");
                 anchorOn.classList.add("btn-primary");
+                //anchorOff.classList.add("float-start");
                 anchorOn.onclick = function() { 
                     ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'open');
                 };
                 anchorOn.appendChild(document.createTextNode("OPEN"));  
-                cardbody.appendChild(anchorOn);
+                p.appendChild(anchorOn);
                 anchorOn = null;
-    
-                anchorOff.classList.add("btn");
-                anchorOff.classList.add("btn-secondary");
-                anchorOff.classList.add("float-end");
-                anchorOff.classList.add("me-1");
-                anchorOff.onclick = function() {               
-                    ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'close');
-                };
-                anchorOff.appendChild(document.createTextNode("close"));
-                cardbody.appendChild(anchorOff);
-                anchorOff = null;
 
                 anchoStop.classList.add("btn");
                 anchoStop.classList.add("btn-info");
-                anchoStop.classList.add("float-end");
-                anchoStop.classList.add("me-1");
+                //anchoStop.classList.add("float-end");
+                //anchoStop.classList.add("me-1");
                 anchoStop.onclick = function() {               
                     ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'stop');
                 };
-                anchoStop.appendChild(document.createTextNode("stop"));
-                cardbody.appendChild(anchoStop);
+                anchoStop.appendChild(document.createTextNode("STOP"));
+                p.appendChild(anchoStop);
                 anchoStop = null;
+                                
+                anchorOff.classList.add("btn");
+                anchorOff.classList.add("btn-secondary");
+                //anchorOff.classList.add("float-center");
+                //anchorOff.classList.add("me-1");
+                anchorOff.onclick = function() {               
+                    ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'close');
+                };
+                anchorOff.appendChild(document.createTextNode("CLOSE"));
+                p.appendChild(anchorOff);
+                anchorOff = null;
 
 
 
@@ -101,7 +104,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 anchorOff.classList.add("btn");
                 anchorOff.classList.add("btn-secondary");
                 anchorOff.classList.add("float-end");
-                anchorOff.classList.add("me-1");
+                //anchorOff.classList.add("me-1");
                 anchorOff.onclick = function() {               
                     ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'off');
                 };
@@ -111,7 +114,7 @@ window.addEventListener('DOMContentLoaded', () => {
             }
 
 
-
+            cardbody.appendChild(p);
             // anchorInfo.classList.add("btn");
             // anchorInfo.classList.add("btn-info");
             // anchorInfo.classList.add("float-end");

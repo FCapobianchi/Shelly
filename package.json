@@ -8,7 +8,8 @@
     "start-electron": "electron .",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "sign": "electron-osx-sign out/shelly-darwin-arm64/shelly.app --type=distribution"
+    "sign": "electron-osx-sign out/shelly-darwin-arm64/shelly.app --type=distribution",
+    "publish": "electron-forge publish"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,7 @@
     "@electron-forge/maker-zip": "^7.3.1",
     "@electron-forge/plugin-auto-unpack-natives": "^7.3.1",
     "@electron-forge/plugin-fuses": "^7.3.0",
+    "@electron-forge/publisher-github": "^7.3.1",
     "@electron/fuses": "^1.7.0",
     "electron": "^29.1.4"
   },
