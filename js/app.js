@@ -31,8 +31,6 @@ window.addEventListener('DOMContentLoaded', () => {
             let anchorOn = document.createElement('a');
             let anchorOff = document.createElement('a');
             let anchoStop = document.createElement('a');
-            // var anchorEdit = document.createElement('a');
-            // var anchorInfo = document.createElement('a');
 
             col.classList.add("column");
             col.setAttribute("draggable","true");
@@ -49,7 +47,7 @@ window.addEventListener('DOMContentLoaded', () => {
             p.classList.add("card-text");
             p.classList.add("d-flex");
             p.classList.add("justify-content-between");
-            //p.appendChild(document.createTextNode(relay.id));
+
             em.appendChild(document.createTextNode(relay.default_state));
             h5.appendChild(document.createElement("hr"));
             h5.appendChild(em);
@@ -58,7 +56,6 @@ window.addEventListener('DOMContentLoaded', () => {
             if(cRelay.mode==="roller"){
                 anchorOn.classList.add("btn");
                 anchorOn.classList.add("btn-primary");
-                //anchorOff.classList.add("float-start");
                 anchorOn.onclick = function() { 
                     ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'open');
                 };
@@ -68,8 +65,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
                 anchoStop.classList.add("btn");
                 anchoStop.classList.add("btn-info");
-                //anchoStop.classList.add("float-end");
-                //anchoStop.classList.add("me-1");
                 anchoStop.onclick = function() {               
                     ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'stop');
                 };
@@ -79,16 +74,12 @@ window.addEventListener('DOMContentLoaded', () => {
                                 
                 anchorOff.classList.add("btn");
                 anchorOff.classList.add("btn-secondary");
-                //anchorOff.classList.add("float-center");
-                //anchorOff.classList.add("me-1");
                 anchorOff.onclick = function() {               
                     ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'close');
                 };
                 anchorOff.appendChild(document.createTextNode("CLOSE"));
                 p.appendChild(anchorOff);
                 anchorOff = null;
-
-
 
             }
             else {
@@ -104,7 +95,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 anchorOff.classList.add("btn");
                 anchorOff.classList.add("btn-secondary");
                 anchorOff.classList.add("float-end");
-                //anchorOff.classList.add("me-1");
                 anchorOff.onclick = function() {               
                     ipcRenderer.send('shellyApi:toggle',cRelay,cDevice,'off');
                 };
@@ -113,26 +103,12 @@ window.addEventListener('DOMContentLoaded', () => {
                 anchorOff = null;
             }
 
-
             cardbody.appendChild(p);
-            // anchorInfo.classList.add("btn");
-            // anchorInfo.classList.add("btn-info");
-            // anchorInfo.classList.add("float-end");
-            // anchorInfo.classList.add("me-1");
-            // anchorInfo.onclick = function() { 
-            //     ipcRenderer.send('openInfo',devId);
-            // };
-            // anchorInfo.appendChild(document.createTextNode("Info"));
-            // cardbody.appendChild(anchorInfo);
-            // anchorInfo = null;
-            
-            
             card.appendChild(cardbody);
             col.appendChild(card);
             if (containerHtml){
                 containerHtml.appendChild(col);
             }
-            //device = null;
         };        
         dragCol();
 	});
@@ -202,7 +178,7 @@ let dragCol = (function() {
 			let card = col.querySelector('.card');
 			let query = 'UPDATE relays SET position = ? WHERE id = ?';
 			ipcRenderer.send('database:update', {query: query, valori:[index,card.getAttribute("data-col-id")]});	
-			//window.location.reload();		
+			window.location.reload();		
 		});
 	};
 

@@ -241,7 +241,7 @@ let dragCol = (function() {
 			let card = col.querySelector('.card');
 			let query = 'UPDATE devices SET position = ? WHERE id = ?';
 			ipcRenderer.send('database:update', {query: query, valori:[index,card.getAttribute("data-col-id")]});	
-			//window.location.reload();		
+			window.location.reload();		
 		});
 	};
 
