@@ -8,6 +8,7 @@ const sqlite3 = require('sqlite3').verbose();
 const ct = fs.existsSync(path.join(app.getPath('userData'), 'shelly.db'))
 const db = new sqlite3.Database(path.join(app.getPath('userData'), 'shelly.db'));
 const http = require('http');
+
 let bonjour = require('bonjour')();
 let mainWindow;
 let currentDevice;
@@ -15,7 +16,8 @@ let deviceInfo;
 let message;
 let store;
 
-2
+console.log(app.isPackaged);
+
 /** CHECK DELLA PRESENZA DEL DB */
 if (!ct) {
     db.serialize(() => {
