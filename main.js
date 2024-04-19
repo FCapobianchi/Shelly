@@ -18,6 +18,8 @@ let store;
 
 console.log(app.isPackaged);
 
+
+
 /** CHECK DELLA PRESENZA DEL DB */
 if (!ct) {
     db.serialize(() => {
