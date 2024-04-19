@@ -11,7 +11,6 @@ window.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
             event.stopPropagation();    
             console.log("Click");        
-            ipcRenderer.send("shellyApi:settings", {url:$(this).attr("href")});
         });
 
     });
