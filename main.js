@@ -265,24 +265,6 @@ ipcMain.on('database:getRelays', (event, data) => {
 
 });
 
-ipcMain.on('shellyApi:settings', (event, data) => {
-    let url = new URL(data.url+'/settings');
-    url.username = "juice";
-    url.password = "Juicenet-2023";
-
-    http.get(url, response => {
-        let data = [];
-        response.on('data', chunk => {
-            data.push(chunk);
-        });
-        response.on('end', () => {
-            const json = JSON.parse(Buffer.concat(data).toString());
-        });
-    }).on('error', error => {
-        alert('Error: ', error.message);
-    });
-});
-
 ipcMain.on('shellyApi:toggle', (event, cRelay, cDevice, status) => {
 
     let url = "";

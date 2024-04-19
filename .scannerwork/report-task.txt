@@ -1,0 +1,6 @@
+projectKey=Progetto-di-test
+serverUrl=http://sonarqube.agid.lan:9000
+serverVersion=10.4.0.87286
+dashboardUrl=http://sonarqube.agid.lan:9000/dashboard?id=Progetto-di-test
+ceTaskId=3f401bf6-4a63-446a-aa69-5a10a058bc7d
+ceTaskUrl=http://sonarqube.agid.lan:9000/api/ce/task?id=3f401bf6-4a63-446a-aa69-5a10a058bc7d
