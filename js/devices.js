@@ -7,7 +7,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const containerNewHtml = document.getElementById("containerNewHtml");
     
     let devices;
-
+    
     if(containerNewHtml){
         ipcRenderer.send('database:getDevices', {})
     }
@@ -122,11 +122,10 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
 	ipcRenderer.on('responseDevices',(e,data)=>{
+        console.log(data);
         let device = devices.find(obj => obj.device_id === data.txt.id);
-        console.log(device);
-        console.log(data.txt.id);
         
-        if(device === undefined && data.txt.id !== undefined){
+        if(device === undefined && (data.txt.id !== undefined || data.txt.gen === "2")){
             var col = document.createElement('div');
             var card = document.createElement('div');
             var cardbody = document.createElement('div');
@@ -137,10 +136,10 @@ window.addEventListener('DOMContentLoaded', () => {
             cardbody.classList.add("card-body");
 
             h5.classList.add("card-title");
-            h5.appendChild(document.createTextNode(data.txt.app));
+            h5.appendChild(document.createTextNode(data.txt.app??data.name));
 
             p.classList.add("card-text");
-            p.appendChild(document.createTextNode(data.txt.id));
+            p.appendChild(document.createTextNode(data.txt.id??data.name));
 
             cardbody.appendChild(h5);
             cardbody.appendChild(p);

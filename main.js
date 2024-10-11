@@ -168,8 +168,12 @@ ipcMain.on('discoverDevice:start', (event,data)=>{
     bonjour.destroy();
     bonjour = require('bonjour')();
     bonjour.find({ type: 'http' }, function (service) {
-        if(service)
+        if(service) {
+            console.log(service);
             mainWindow.webContents.send('responseDevices',service);
+        } else {
+            console.log("responseDevices error");
+        }
     });
 });
 
